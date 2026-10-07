@@ -5,19 +5,6 @@ Ximena Sanchez Lomeli
 Jonathan Joshua Sosa Llamas
 */
 
-/*           ~ PERSONAJES ~
-Atributos: 
-    Nombre
-    HP
-    Dano
-    Attk fisico
-    Attk magico
-    Def magica
-    Def fisica
-    Magias
-    Invent
-*/
-
 typedef struct {
     int HP;
     int dano;
@@ -26,6 +13,8 @@ typedef struct {
     int Attkmag;
     int Deffis;
     int Defmag;
+    int tipo; //para saber si es humano o villano
+    int escudo; //para mi funcion
     int duracef; // duracef -> duracion de efecto(s)
 } personaje;
 
@@ -83,7 +72,7 @@ void modifAtributos(void * self, void * enemigo) { // como quiero poder usar la 
             break;
         case 4:
             selfReal->Defmag = selfReal->Defmag + 2;
-            selfReal->duracef = 3; // los 4 cansos 
+            selfReal->duracef = 3; // los 4 casos 
             break;
         default:
             break;
@@ -122,3 +111,57 @@ void modifAtributos(void * self, void * enemigo) { // como quiero poder usar la 
 }
 
 // void bolafuego(void ¨)
+
+
+//funciones de ximena
+
+//para generar un escudo
+void add_escudo(void *self){
+    personaje *usuario = (personaje*)self;
+    usuario->escudo ++ ;
+    if(usuario->tipo==0){
+        printf("Expones el ataque presidencial en los medios, ahora todo el mundo lo sabe!\n");
+        printf("conseguiste +1 escudo, puedes bloquear el proximo ataque\n");
+    }
+    else {
+        printf("El presidente inicio una cortina de humo, oculta la informacion de los medios\n");
+        printf("consiguio +1 escudo, ahora puede bloquear tu proximo ataque !!\n");
+    }
+}
+
+//para usar el escudo
+int usar_escudo(personaje *defensor){
+    if(defensor->escudo == 0){
+        return 0;
+    }
+    if(defensor->tipo == 0){
+        int eleccion;
+
+        printf("Tienes %d escudos, quieres bloquear un ataque?\n", defensor->escudo);
+        printf("1. si\n 2. no");
+        scanf("%d", &eleccion);
+
+            if(eleccion == 1){
+                defensor->escudo --;
+                printf("El ataque se ha bloqueaado\n");
+                printf("te quedan %d escudos\n", defensor->escudo);
+                return 1;
+            }
+        }
+
+    else{
+        defensor->escudo --;
+        printf("El presidente a bloqueado tu ataque, te ha podido silenciar\n");
+        printf("le quedan %d escudos\n", defensor->escudo);
+        return 1;
+    }
+return 0;
+}
+
+// si vas a hacer una funcion de ataque agrega este if al inicio de tu funcion para q pueda usar el escudo pls
+
+
+/*  este merito ⬇
+if(usar_escudo(//nombre del q atacaras)){
+    return;
+}*/
