@@ -24,8 +24,10 @@ typedef struct {
 
 /*           Motor de turnos                
     ya lo necesitaba para lo de la reduccion de atributos y asi, si no estaba medio matado solo hacerlo al aire     */
-void motordeTurnos () {
+void motordeTurnos (personaje * jugador, personaje * enemigo) {
+    while ((jugador->dano < jugador->HP) && (enemigo->dano < enemigo->HP)) {
 
+    }
 }
 
 
@@ -201,7 +203,14 @@ if(usar_escudo(//nombre del q atacaras)){
 [4] -> jefe final
 */
 
+// orden de datos para personajes : nombre -> hp -> dano -> juega -> attkfis -> attkmag -> deffis -> defmag -> tipo -> escudo -> duracef -> atribmod -> buff 
 int main( ) {
-    personaje personajess[5] = {};
+    personaje personajess[5] = {
+        {"Richy Anaya", 100, 0, true, 15, 14, 5, 4, 0, 0, 0, 0, false}, // jugador
+        {"Lemus", 75, 0, true, 12, 10, 3, 3, 1, 0, 0, 0, false}, // easy
+        {"AMLO", 90, 0, true, 16, 14, 5, 4, 1, 0, 0, 0, false}, // medium
+        {"ShameBee", 110, 0, true, 19, 18, 7, 6, 1, 0, 0, 0, false}, // hard 
+        {"Trump", 140, 0, true, 23, 21, 9, 8, 1, 0, 0, 0, false} // final boss 
+    };
     return 0;
 }
