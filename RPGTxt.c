@@ -18,7 +18,7 @@ typedef struct {
     int escudo; //para mi funcion
     int duracef; // duracef -> duracion de efecto(s)
     int atribmod; // para guardar el atributo modificado y reconocer cual es
-    bool buff; // fue mejora o disminucion? es decir true -> +2 o false -> -2 para el aumento o disminucion de atributos 
+    bool buff; // fue mejora o disminucion? es decir true -> +2 o false -> -2 para el aumento o disminucion de atributos aka para poder recordar que hacerle tras los 3 turnos 
 } personaje;
 
 /*           Mis 3 funciones de magia         */
@@ -64,18 +64,26 @@ void modifAtributos(void * self, void * enemigo) { // como quiero poder usar la 
         case 1:
             selfReal->Attkfis = selfReal->Attkfis + 2; // si pusiera solo selfReal->Attkfis+2 y attkfis = 5 daria 7 pero no se guardaria, so necesito asignar 
             selfReal->duracef = 3; // aqui lo que hago es que agrego la duracion de 3 turnos
+            selfReal->atribmod = elmg; // con esto recordare el atributo modificado
+            selfReal->buff = true;
             break;
         case 2:
             selfReal->Attkmag = selfReal->Attkmag + 2;
-            selfReal->duracef = 3; // ifual aca
+            selfReal->duracef = 3; // igual aca
+            selfReal->atribmod = elmg; // same 
+            selfReal->buff = true;
             break;
         case 3:
             selfReal->Deffis = selfReal->Deffis + 2;
             selfReal->duracef = 3; // igual aca
+            selfReal->atribmod = elmg;
+            selfReal->buff = true;
             break;
         case 4:
             selfReal->Defmag = selfReal->Defmag + 2;
             selfReal->duracef = 3; // los 4 casos 
+            selfReal->atribmod = elmg;
+            selfReal->buff = true;
             break;
         default:
             break;
