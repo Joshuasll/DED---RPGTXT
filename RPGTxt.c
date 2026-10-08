@@ -1,4 +1,5 @@
 #include <stdbool.h>
+#include <stdio.h>
 
 /*
 Ximena Sanchez Lomeli
@@ -16,6 +17,8 @@ typedef struct {
     int tipo; //para saber si es humano o villano
     int escudo; //para mi funcion
     int duracef; // duracef -> duracion de efecto(s)
+    int atribmod; // para guardar el atributo modificado y reconocer cual es
+    bool buff; // fue mejora o disminucion? es decir true -> +2 o false -> -2 para el aumento o disminucion de atributos 
 } personaje;
 
 /*           Mis 3 funciones de magia         */
@@ -151,7 +154,7 @@ int usar_escudo(personaje *defensor){
 
     else{
         defensor->escudo --;
-        printf("El presidente a bloqueado tu ataque, te ha podido silenciar\n");
+        printf("El presidente ha bloqueado tu ataque, te ha podido silenciar\n");
         printf("le quedan %d escudos\n", defensor->escudo);
         return 1;
     }
