@@ -30,7 +30,7 @@ void motordeTurnos (personaje * jugador, personaje * enemigo) { // aqui necesito
         if (jugador->juega == false ) { // reviso si pierde turno o no
             jugador->juega = true; // corrijo y dejo listo para la siguiente tirada 
         } else {
-
+            // accion normal
         }
         // por si hay buff o debuff - humano
         if (jugador->duracef > 0) {
@@ -71,7 +71,7 @@ void motordeTurnos (personaje * jugador, personaje * enemigo) { // aqui necesito
                     break;
                 default:
                     break;
-                } // llave switch si fue debuff
+                } // cierre switch debuff
             }
         }
     }
@@ -81,10 +81,52 @@ void motordeTurnos (personaje * jugador, personaje * enemigo) { // aqui necesito
             if (enemigo->juega == false ) {
                 enemigo->juega = true; // de nuevo corrijo pero para enemigo 
                 } else {
-
+                    // accion normal
+                }
+                if (enemigo->duracef > 0) {
+            enemigo->duracef --; // voy restando al contador de turnos que da duracion del buff o debuff 
+            if (enemigo->duracef == 0) { // una vez que da las vueltas y va restando, ya cuando da 0, pasa a esto
+                if (enemigo->buff == true) { // aqui determino si toca restar o sumar
+                    switch (enemigo->atribmod) // recibo el atributo modificado, donde guarde cual cambió
+                { // AQUI reciclé un poco del codigo anterior 
+                case 1: // ya con los cases, restauro las stats a su punto anterior 
+                    enemigo->Attkfis = enemigo->Attkfis - 2;
+                    break;
+                case 2:
+                    enemigo->Attkmag = enemigo->Attkmag - 2;
+                    break;
+                case 3:
+                    enemigo->Deffis = enemigo->Deffis - 2;
+                    break;
+                case 4:
+                    enemigo->Defmag = enemigo->Defmag - 2; 
+                    break;
+                default:
+                    break;
+                } // llave switch si fue buff
+            } else {
+                    switch (enemigo->atribmod) // recibo el atributo modificado, donde guarde cual cambió
+                {
+                case 1: // ya con los cases, restauro las stats a su punto anterior 
+                    enemigo->Attkfis = enemigo->Attkfis + 2;
+                    break;
+                case 2:
+                    enemigo->Attkmag = enemigo->Attkmag + 2;
+                    break;
+                case 3:
+                    enemigo->Deffis = enemigo->Deffis + 2;
+                    break;
+                case 4:
+                    enemigo->Defmag = enemigo->Defmag + 2; 
+                    break;
+                default:
+                    break;
+                        } // llave switch si fue debuff
+                    }
+                } 
             }
         }
-    } 
+    }
 }
 
 
@@ -130,25 +172,25 @@ void modifAtributos(void * self, void * enemigo) { // como quiero poder usar la 
         {
         case 1:
             selfReal->Attkfis = selfReal->Attkfis + 2; // si pusiera solo selfReal->Attkfis+2 y attkfis = 5 daria 7 pero no se guardaria, so necesito asignar 
-            selfReal->duracef = 3; // aqui lo que hago es que agrego la duracion de 3 turnos
+            selfReal->duracef = 4; // aqui lo que hago es que agrego la duracion de 3 turnos, NOTA -> use 4 porque al usar la magia se descuenta uno inmediatamente, ponerlo a 4 fue una solución facil y rapida tbh 
             selfReal->atribmod = elmg; // con esto recordare el atributo modificado
             selfReal->buff = true;
             break;
         case 2:
             selfReal->Attkmag = selfReal->Attkmag + 2;
-            selfReal->duracef = 3; // igual aca
+            selfReal->duracef = 4; // igual aca
             selfReal->atribmod = elmg; // same 
             selfReal->buff = true;
             break;
         case 3:
             selfReal->Deffis = selfReal->Deffis + 2;
-            selfReal->duracef = 3; // igual aca
+            selfReal->duracef = 4; // igual aca
             selfReal->atribmod = elmg;
             selfReal->buff = true;
             break;
         case 4:
             selfReal->Defmag = selfReal->Defmag + 2;
-            selfReal->duracef = 3; // los 4 casos 
+            selfReal->duracef = 4; // los 4 casos 
             selfReal->atribmod = elmg;
             selfReal->buff = true;
             break;
@@ -167,25 +209,25 @@ void modifAtributos(void * self, void * enemigo) { // como quiero poder usar la 
         {
         case 1:
             enemigoReal->Attkfis = enemigoReal->Attkfis - 2; // asigno y cambio la variable para que se entienda que ahora vamos por tu enemigo tbh 
-            enemigoReal->duracef = 3; // tmb aca asigno duracion de tiempo libre 
+            enemigoReal->duracef = 4; // tmb aca asigno duracion de tiempo libre 
             enemigoReal->atribmod = elmg;
             enemigoReal->buff = false;
             break;
         case 2:
             enemigoReal->Attkmag = enemigoReal->Attkmag - 2;
-            enemigoReal->duracef = 3; // same here
+            enemigoReal->duracef = 4; // same here
             enemigoReal->atribmod = elmg;
             enemigoReal->buff = false;
             break;
         case 3:
             enemigoReal->Deffis = enemigoReal->Deffis - 2;
-            enemigoReal->duracef = 3; // same here
+            enemigoReal->duracef = 4; // same here
             enemigoReal->atribmod = elmg;
             enemigoReal->buff = false;
             break;
         case 4:
             enemigoReal->Defmag = enemigoReal->Defmag - 2;
-            enemigoReal->duracef = 3; // same same same 
+            enemigoReal->duracef = 4; // same same same 
             enemigoReal->atribmod = elmg;
             enemigoReal->buff = false;
             break;
