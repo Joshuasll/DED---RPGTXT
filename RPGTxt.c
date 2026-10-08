@@ -1,5 +1,6 @@
 #include <stdbool.h>
 #include <stdio.h>
+#include <stdlib.h>
 
 /*
 Ximena Sanchez Lomeli
@@ -239,6 +240,12 @@ void modifAtributos(void * self, void * enemigo) { // como quiero poder usar la 
 }
 
 // void bolafuego(void ¨)
+void bolafuego(void * objetivo, void * emisor) {
+    personaje * objReal = (personaje *) objetivo;
+    personaje * emiReal = (personaje *) emisor;
+
+    
+}
 
 
 //funciones de ximena
