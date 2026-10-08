@@ -24,9 +24,11 @@ typedef struct {
 
 /*           Motor de turnos                
     ya lo necesitaba para lo de la reduccion de atributos y asi, si no estaba medio matado solo hacerlo al aire     */
-void motordeTurnos (personaje * jugador, personaje * enemigo) {
-    while ((jugador->dano < jugador->HP) && (enemigo->dano < enemigo->HP)) {
-
+void motordeTurnos (personaje * jugador, personaje * enemigo) { // aqui necesito que los turnos controlen a los 2 
+    while ((jugador->dano < jugador->HP) && (enemigo->dano < enemigo->HP)) { // esta linea la pongo porque en realidad necesito que hayan turnos mientras la batalla siga aka que sigan vivos los dos 
+        if (jugador->juega == false ) {
+            jugador->juega = true; 
+        }
     }
 }
 
