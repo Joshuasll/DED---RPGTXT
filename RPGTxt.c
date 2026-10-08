@@ -240,11 +240,18 @@ void modifAtributos(void * self, void * enemigo) { // como quiero poder usar la 
 }
 
 // void bolafuego(void ¨)
-void bolafuego(void * objetivo, void * emisor) {
+void bolafuego(void * objetivo, void * emisor) { // necesito atacante y atacado
+    int danof = 0;
+
     personaje * objReal = (personaje *) objetivo;
     personaje * emiReal = (personaje *) emisor;
+    danof = emiReal->Attkmag - (objReal->Defmag);
 
-    
+    if (objReal->Defmag > emiReal->Attkmag || objReal->Defmag == emiReal->Attkmag) {
+        objReal->dano ++;
+    } else {
+        objReal->dano = objReal->dano + danof;
+    }
 }
 
 
