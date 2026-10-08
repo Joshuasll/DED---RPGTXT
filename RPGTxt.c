@@ -26,10 +26,64 @@ typedef struct {
     ya lo necesitaba para lo de la reduccion de atributos y asi, si no estaba medio matado solo hacerlo al aire     */
 void motordeTurnos (personaje * jugador, personaje * enemigo) { // aqui necesito que los turnos controlen a los 2 
     while ((jugador->dano < jugador->HP) && (enemigo->dano < enemigo->HP)) { // esta linea la pongo porque en realidad necesito que hayan turnos mientras la batalla siga aka que sigan vivos los dos 
-        if (jugador->juega == false ) {
-            jugador->juega = true; 
+        // Humano
+        if (jugador->juega == false ) { // reviso si pierde turno o no
+            jugador->juega = true; // corrijo y dejo listo para la siguiente tirada 
+        } else {
+
         }
-    }
+        // por si hay buff o debuff - humano
+        if (jugador->duracef > 0) {
+            jugador->duracef --; // voy restando al contador de turnos que da duracion del buff o debuff 
+            if (jugador->duracef == 0) { // una vez que da las vueltas y va restando, ya cuando da 0, pasa a esto
+                if (jugador->buff == true) { // aqui determino si toca restar o sumar
+                    switch (jugador->atribmod) // recibo el atributo modificado, donde guarde cual cambió
+                {
+                case 1: // ya con los cases, restauro las stats a su punto anterior 
+                    jugador->Attkfis = jugador->Attkfis - 2;
+                    break;
+                case 2:
+                    jugador->Attkmag = jugador->Attkmag - 2;
+                    break;
+                case 3:
+                    jugador->Deffis = jugador->Deffis - 2;
+                    break;
+                case 4:
+                    jugador->Defmag = jugador->Defmag - 2; 
+                    break;
+                default:
+                    break;
+                } // llave switch si fue buff
+            } else {
+                    switch (jugador->atribmod) // recibo el atributo modificado, donde guarde cual cambió
+                {
+                case 1: // ya con los cases, restauro las stats a su punto anterior 
+                    jugador->Attkfis = jugador->Attkfis + 2;
+                    break;
+                case 2:
+                    jugador->Attkmag = jugador->Attkmag + 2;
+                    break;
+                case 3:
+                    jugador->Deffis = jugador->Deffis + 2;
+                    break;
+                case 4:
+                    jugador->Defmag = jugador->Defmag + 2; 
+                    break;
+                default:
+                    break;
+                } // llave switch si fue debuff
+            }
+        }
+
+        // Enemigo
+        if (enemigo->dano < enemigo->HP) {
+            if (enemigo->juega == false ) {
+                enemigo->juega = true; // de nuevo corrijo pero para enemigo 
+                } else {
+
+            }
+        }
+    } 
 }
 
 
