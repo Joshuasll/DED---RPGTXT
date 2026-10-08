@@ -74,6 +74,7 @@ void motordeTurnos (personaje * jugador, personaje * enemigo) { // aqui necesito
                 } // llave switch si fue debuff
             }
         }
+    }
 
         // Enemigo
         if (enemigo->dano < enemigo->HP) {
