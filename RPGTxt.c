@@ -21,6 +21,11 @@ typedef struct {
     bool buff; // fue mejora o disminucion? es decir true -> +2 o false -> -2 para el aumento o disminucion de atributos aka para poder recordar que hacerle tras los 3 turnos 
 } personaje;
 
+/*           Motor de turnos                
+    ya lo necesitaba para lo de la reduccion de atributos y asi, si no estaba medio matado solo hacerlo al aire     */
+
+
+
 /*           Mis 3 funciones de magia         */
 
 // Perder turno 
@@ -101,18 +106,26 @@ void modifAtributos(void * self, void * enemigo) { // como quiero poder usar la 
         case 1:
             enemigoReal->Attkfis = enemigoReal->Attkfis - 2; // asigno y cambio la variable para que se entienda que ahora vamos por tu enemigo tbh 
             enemigoReal->duracef = 3; // tmb aca asigno duracion de tiempo libre 
+            enemigoReal->atribmod = elmg;
+            enemigoReal->buff = false;
             break;
         case 2:
             enemigoReal->Attkmag = enemigoReal->Attkmag - 2;
             enemigoReal->duracef = 3; // same here
+            enemigoReal->atribmod = elmg;
+            enemigoReal->buff = false;
             break;
         case 3:
             enemigoReal->Deffis = enemigoReal->Deffis - 2;
             enemigoReal->duracef = 3; // same here
+            enemigoReal->atribmod = elmg;
+            enemigoReal->buff = false;
             break;
         case 4:
             enemigoReal->Defmag = enemigoReal->Defmag - 2;
             enemigoReal->duracef = 3; // same same same 
+            enemigoReal->atribmod = elmg;
+            enemigoReal->buff = false;
             break;
         default:
             break;
