@@ -7,6 +7,7 @@ Jonathan Joshua Sosa Llamas
 */
 
 typedef struct {
+    char nombre[30]; // puse de tamaño 30 solo por si acaso 
     int HP;
     int dano;
     bool juega;
@@ -23,7 +24,9 @@ typedef struct {
 
 /*           Motor de turnos                
     ya lo necesitaba para lo de la reduccion de atributos y asi, si no estaba medio matado solo hacerlo al aire     */
+void motordeTurnos () {
 
+}
 
 
 /*           Mis 3 funciones de magia         */
@@ -189,3 +192,16 @@ return 0;
 if(usar_escudo(//nombre del q atacaras)){
     return;
 }*/
+
+/*
+[0] -> nuestro personaje
+[1] -> enemigo facil
+[2] -> enemigo intermedio 
+[3] -> enemigo dificil
+[4] -> jefe final
+*/
+
+int main( ) {
+    personaje personajess[5] = {};
+    return 0;
+}
