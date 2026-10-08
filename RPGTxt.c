@@ -204,30 +204,30 @@ void modifAtributos(void * self, void * enemigo) { // como quiero poder usar la 
         printf("3 - Defensa fisica\n");
         printf("4 - Defensa magica\n");
         scanf("%d", &elmg);
-        // SWITCH para cuando es al ENEMIGO, al que LE RESTARÉ
+        // SWITCH para cuando es al ENEMIGO, al que LE RESTARÉ, el DEBUFF
         switch (elmg)
         {
         case 1:
             enemigoReal->Attkfis = enemigoReal->Attkfis - 2; // asigno y cambio la variable para que se entienda que ahora vamos por tu enemigo tbh 
-            enemigoReal->duracef = 4; // tmb aca asigno duracion de tiempo libre 
+            enemigoReal->duracef = 3; // tmb aca asigno duracion de tiempo libre 
             enemigoReal->atribmod = elmg;
             enemigoReal->buff = false;
             break;
         case 2:
             enemigoReal->Attkmag = enemigoReal->Attkmag - 2;
-            enemigoReal->duracef = 4; // same here
+            enemigoReal->duracef = 3; // same here
             enemigoReal->atribmod = elmg;
             enemigoReal->buff = false;
             break;
         case 3:
             enemigoReal->Deffis = enemigoReal->Deffis - 2;
-            enemigoReal->duracef = 4; // same here
+            enemigoReal->duracef = 3; // same here
             enemigoReal->atribmod = elmg;
             enemigoReal->buff = false;
             break;
         case 4:
             enemigoReal->Defmag = enemigoReal->Defmag - 2;
-            enemigoReal->duracef = 4; // same same same 
+            enemigoReal->duracef = 3; // same same same 
             enemigoReal->atribmod = elmg;
             enemigoReal->buff = false;
             break;
