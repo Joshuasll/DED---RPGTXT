@@ -15,7 +15,7 @@ typedef struct {
     int Attkmag;
     int Deffis;
     int Defmag;
-    int tipo; //para saber si es humano o villano
+    int tipo; //para saber si es humano o villano       0 -> 👤 humano  1 -> 👹 enemigo
     int escudo; //para mi funcion
     int duracef; // duracef -> duracion de efecto(s)
     int atribmod; // para guardar el atributo modificado y reconocer cual es
