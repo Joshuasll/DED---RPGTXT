@@ -131,18 +131,26 @@ void motordeTurnos (personaje * jugador, personaje * enemigo) { // aqui necesito
 }
 
 
+
+
+
+
 /*           Mis 3 funciones de magia         */
 
 // Perder turno 
 void magiaPerderTurno(void * enemigo) { // con el void * enemigo, apunto al enemigo que quiero afectar 
     personaje * enemigoReal = (personaje *) enemigo; // como enemigo es void, uso otro de personaje para poder acceder al "menu" de datos y casteo a enemigo a personaje
     enemigoReal->juega = false; // como enemigoReal como tal tiene dentro al enemigo apuntado, estoy modificando el booleano de si juega o no el wey
-
+    if (enemigoReal->tipo == 0) {
+        printf("Chicken little levanta un amparo y hace que el enemigo pierda turno\n");
+    } else {
+        printf("El partido político al mando manda instrucciones de retener en el aeropuerto a Anaya y pierde su turno\n");
+    }
 }
 /*
 En esa de perder turno, la deje asi de momento, porque como tal, creo que tendriamos que poner tmb algo como que 
 administre los turnos por fuera, incluirlo dentro haria que el false de que juegue el personaje en cuestion dure una
-nadotaaaaaa
+nadotaaaaaa - UPDATE -> ya quedó
 */
 
 // Mejora o reduccion de atributos 
@@ -160,7 +168,7 @@ void modifAtributos(void * self, void * enemigo) { // como quiero poder usar la 
     printf("2 -> Al enemigo\n");
     scanf("%d", &elaf);
 
-    if (elaf == 1 ) { // aka que me afecte a mi mismo
+    if (elaf == 1 ) { // aka que me afecte a mi mismo -> SELF👤
         // seleccion de atributo a modificar
         printf("Que atributo quieres mejorar durante 3 turnos?\n");
         printf("1 - Ataque Fisico\n");
@@ -176,29 +184,49 @@ void modifAtributos(void * self, void * enemigo) { // como quiero poder usar la 
             selfReal->duracef = 4; // aqui lo que hago es que agrego la duracion de 3 turnos, NOTA -> use 4 porque al usar la magia se descuenta uno inmediatamente, ponerlo a 4 fue una solución facil y rapida tbh 
             selfReal->atribmod = elmg; // con esto recordare el atributo modificado
             selfReal->buff = true;
+            if (selfReal->tipo == 0) {
+                printf("Richy entrenó gym la semana pasada y ahora pega más fuerte durante 3 turnos! (+2 ataque físico)\n");
+            } else {
+                printf("%s completó una gira de campaña cargando bebes, lonas y cajas de despensa, lo que l@ hace pegar más fuerte! (+3 ataque físico)\n", selfReal->nombre);
+            }
             break;
         case 2:
             selfReal->Attkmag = selfReal->Attkmag + 2;
             selfReal->duracef = 4; // igual aca
             selfReal->atribmod = elmg; // same 
             selfReal->buff = true;
+            if (selfReal->tipo == 0) {
+                printf("Richy reune maná y ahora su magia es más fuerte durante 3 turnos! (+2 ataque mágico)\n");
+            } else {
+                printf("%s empieza a citar encuestas que nadie sabe de dónde salieron y su poder mágico aumenta! (+2 ataque mágico)\n", selfReal->nombre);
+            }
             break;
         case 3:
             selfReal->Deffis = selfReal->Deffis + 2;
             selfReal->duracef = 4; // igual aca
             selfReal->atribmod = elmg;
             selfReal->buff = true;
+            if (selfReal->tipo == 0) {
+                printf("Richy se pone su chaleco de campaña y ahora aguanta más vara durante 3 turnos! (+2 defensa física)\n");
+            } else {
+                printf("%s se pone chaleco antibalas de campaña y ahora está blindado durante 3 turnos! (+2 defensa física)\n");
+            }
             break;
         case 4:
             selfReal->Defmag = selfReal->Defmag + 2;
             selfReal->duracef = 4; // los 4 casos 
             selfReal->atribmod = elmg;
             selfReal->buff = true;
+            if (selfReal->tipo == 0) {
+                printf("Richy publica un video de 14 minutos defendiéndose de las acusaciones y obtiene mayor defensa mágica por 3 turnos! (+2 defensa mágica)\n");
+            } else {
+                printf("%s lanza un comunicado de 12 cuartillas negándolo absolutamente todo y obtiene +2 defensa magica durante 3 turnos! (+2 defensa mágica)\n");
+            }
             break;
         default:
             break;
         }
-    } else if (elaf == 2 ) { // aka que afecte al enemigo
+    } else if (elaf == 2 ) { // aka que afecte al enemigo -> ENEMIGO👹
         printf("Que atributo quieres reducir durante 3 turnos?\n");
         printf("1 - Ataque Fisico\n");
         printf("2 - Ataque magico\n");
@@ -213,6 +241,11 @@ void modifAtributos(void * self, void * enemigo) { // como quiero poder usar la 
             enemigoReal->duracef = 3; // tmb aca asigno duracion de tiempo libre 
             enemigoReal->atribmod = elmg;
             enemigoReal->buff = false;
+             if (enemigoReal->tipo == 0) {
+                printf("Richy publica un video de 14 minutos defendiéndose de las acusaciones y obtiene mayor defensa mágica por 3 turnos! (+2 defensa mágica)\n");
+            } else {
+                printf("%s lanza un comunicado de 12 cuartillas negándolo absolutamente todo y obtiene +2 defensa magica durante 3 turnos! (+2 defensa mágica)\n");
+            }
             break;
         case 2:
             enemigoReal->Attkmag = enemigoReal->Attkmag - 2;
