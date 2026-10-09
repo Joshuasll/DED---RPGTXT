@@ -291,9 +291,9 @@ void modifAtributos(void * self, void * enemigo) { // como quiero poder usar la 
 void bolafuego(void * objetivo, void * emisor) { // necesito atacante y atacado
     int danof = 0;
 
-    personaje * objReal = (personaje *) objetivo;
-    personaje * emiReal = (personaje *) emisor;
-    danof = emiReal->Attkmag - (objReal->Defmag);
+    personaje * objReal = (personaje *) objetivo; // es decir, quien recibirá el ataque
+    personaje * emiReal = (personaje *) emisor; // y quien tirará el ataque 
+    danof = emiReal->Attkmag - (objReal->Defmag); // el daño por fuego lo calculo a partir del ataque magico del emisor - la defensa magica de quien lo recibe 
 
     if (objReal->Defmag > emiReal->Attkmag || objReal->Defmag == emiReal->Attkmag) {
         objReal->dano ++;
