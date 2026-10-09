@@ -75,7 +75,6 @@ void motordeTurnos (personaje * jugador, personaje * enemigo) { // aqui necesito
                 } // cierre switch debuff
             }
         }
-    }
 
         // Enemigo
         if (enemigo->dano < enemigo->HP) {
@@ -128,6 +127,7 @@ void motordeTurnos (personaje * jugador, personaje * enemigo) { // aqui necesito
             }
         }
     }
+}
 }
 
 
@@ -241,10 +241,10 @@ void modifAtributos(void * self, void * enemigo) { // como quiero poder usar la 
             enemigoReal->duracef = 3; // tmb aca asigno duracion de tiempo libre 
             enemigoReal->atribmod = elmg;
             enemigoReal->buff = false;
-             if (enemigoReal->tipo == 0) {
-                printf("%s filtra una investigación en contra de Richy y le entra miedo político durante 3 turnos! (-2 ataque físico)\n", enemigoReal->nombre);
-            } else {
-                printf("Richy acusa a %s en cadena nacional y ahora le tiembla la mano durante 3 turnos! (-2 ataque físico)\n", enemigoReal->nombre);
+             if (selfReal->tipo == 0) {
+                 printf("Richy acusa a %s en cadena nacional y ahora le tiembla la mano durante 3 turnos! (-2 ataque físico)\n", enemigoReal->nombre);
+                } else {
+                printf("%s filtra una investigación en contra de Richy y le entra miedo político durante 3 turnos! (-2 ataque físico)\n", selfReal->nombre);
             }
             break;
         case 2:
@@ -252,10 +252,10 @@ void modifAtributos(void * self, void * enemigo) { // como quiero poder usar la 
             enemigoReal->duracef = 3; // same here
             enemigoReal->atribmod = elmg;
             enemigoReal->buff = false;
-            if (enemigoReal->tipo == 0) {
-                printf("%s saca una encuesta donde Richy sale con 2 por ciento de intención de voto, su magia se debilita 3 turnos! (-2 ataque mágico)\n", enemigoReal->nombre);
-            } else {
+            if (selfReal->tipo == 0) {
                 printf("Richy le tumba el discurso a %s con datos el INEGI y l@ hace perder poder mágico durante 3 turnos! (-2 ataque mágico)\n", enemigoReal->nombre);
+            } else {
+                printf("%s saca una encuesta donde Richy sale con 2 por ciento de intención de voto, su magia se debilita 3 turnos! (-2 ataque mágico)\n", selfReal->nombre);
             }
             break;
         case 3:
@@ -263,10 +263,10 @@ void modifAtributos(void * self, void * enemigo) { // como quiero poder usar la 
             enemigoReal->duracef = 3; // same here
             enemigoReal->atribmod = elmg;
             enemigoReal->buff = false;
-            if (enemigoReal->tipo == 0) {
-                printf("%s manda a quitarle el equipo de campaña a Richy y lo deja sin protección durante 3 turnos! (-2 defensa fisica)\n", enemigoReal->nombre);
-            } else {
+            if (selfReal->tipo == 0) {
                 printf("Richy encuentra una irregularidad en la declaración patrimonial de %s y lo deja expuesto durante 3 turnos! (-2 defensa fisica)\n", enemigoReal->nombre);
+            } else {
+                printf("%s manda a quitarle el equipo de campaña a Richy y lo deja sin protección durante 3 turnos! (-2 defensa fisica)\n", selfReal->nombre);
             }
             break;
         case 4:
@@ -274,10 +274,10 @@ void modifAtributos(void * self, void * enemigo) { // como quiero poder usar la 
             enemigoReal->duracef = 3; // same same same 
             enemigoReal->atribmod = elmg;
             enemigoReal->buff = false;
-            if (enemigoReal->tipo == 0) {
-                printf("%s presenta 46 capturas de pantalla fuera de contexto y destruye temporalmente la narrativa de Richy! (-2 defensa magica durante 3 turnos)\n", enemigoReal->nombre);
-            } else {
+            if (selfReal->tipo == 0) {
                 printf("Richy saca una presentación de PowerPoint con 83 diapositivas y destruye la narrativa de %s! (-2 defensa magica durante 3 turnos)\n", enemigoReal->nombre);
+            } else {
+                printf("%s presenta 46 capturas de pantalla fuera de contexto y destruye temporalmente la narrativa de Richy! (-2 defensa magica durante 3 turnos)\n", selfReal->nombre);
             }
             break;
         default:
