@@ -187,7 +187,7 @@ void modifAtributos(void * self, void * enemigo) { // como quiero poder usar la 
             if (selfReal->tipo == 0) {
                 printf("Richy entrenó gym la semana pasada y ahora pega más fuerte durante 3 turnos! (+2 ataque físico)\n");
             } else {
-                printf("%s completó una gira de campaña cargando bebes, lonas y cajas de despensa, lo que l@ hace pegar más fuerte! (+3 ataque físico)\n", selfReal->nombre);
+                printf("%s completó una gira de campaña cargando bebes, lonas y cajas de despensa, lo que l@ hace pegar más fuerte! (+2 ataque físico)\n", selfReal->nombre);
             }
             break;
         case 2:
@@ -209,7 +209,7 @@ void modifAtributos(void * self, void * enemigo) { // como quiero poder usar la 
             if (selfReal->tipo == 0) {
                 printf("Richy se pone su chaleco de campaña y ahora aguanta más vara durante 3 turnos! (+2 defensa física)\n");
             } else {
-                printf("%s se pone chaleco antibalas de campaña y ahora está blindado durante 3 turnos! (+2 defensa física)\n");
+                printf("%s se pone chaleco antibalas de campaña y ahora está blindado durante 3 turnos! (+2 defensa física)\n", selfReal->nombre);
             }
             break;
         case 4:
@@ -220,7 +220,7 @@ void modifAtributos(void * self, void * enemigo) { // como quiero poder usar la 
             if (selfReal->tipo == 0) {
                 printf("Richy publica un video de 14 minutos defendiéndose de las acusaciones y obtiene mayor defensa mágica por 3 turnos! (+2 defensa mágica)\n");
             } else {
-                printf("%s lanza un comunicado de 12 cuartillas negándolo absolutamente todo y obtiene +2 defensa magica durante 3 turnos! (+2 defensa mágica)\n");
+                printf("%s lanza un comunicado de 12 cuartillas negándolo absolutamente todo y obtiene +2 defensa magica durante 3 turnos! (+2 defensa mágica)\n", selfReal->nombre);
             }
             break;
         default:
@@ -242,9 +242,9 @@ void modifAtributos(void * self, void * enemigo) { // como quiero poder usar la 
             enemigoReal->atribmod = elmg;
             enemigoReal->buff = false;
              if (enemigoReal->tipo == 0) {
-                printf("Richy publica un video de 14 minutos defendiéndose de las acusaciones y obtiene mayor defensa mágica por 3 turnos! (+2 defensa mágica)\n");
+                printf("%s filtra una investigación en contra de Richy y le entra miedo político durante 3 turnos! (-2 ataque físico)\n", enemigoReal->nombre);
             } else {
-                printf("%s lanza un comunicado de 12 cuartillas negándolo absolutamente todo y obtiene +2 defensa magica durante 3 turnos! (+2 defensa mágica)\n");
+                printf("Richy acusa a %s en cadena nacional y ahora le tiembla la mano durante 3 turnos! (-2 ataque físico)\n", enemigoReal->nombre);
             }
             break;
         case 2:
@@ -252,18 +252,33 @@ void modifAtributos(void * self, void * enemigo) { // como quiero poder usar la 
             enemigoReal->duracef = 3; // same here
             enemigoReal->atribmod = elmg;
             enemigoReal->buff = false;
+            if (enemigoReal->tipo == 0) {
+                printf("%s saca una encuesta donde Richy sale con 2 por ciento de intención de voto, su magia se debilita 3 turnos! (-2 ataque mágico)\n", enemigoReal->nombre);
+            } else {
+                printf("Richy le tumba el discurso a %s con datos el INEGI y l@ hace perder poder mágico durante 3 turnos! (-2 ataque mágico)\n", enemigoReal->nombre);
+            }
             break;
         case 3:
             enemigoReal->Deffis = enemigoReal->Deffis - 2;
             enemigoReal->duracef = 3; // same here
             enemigoReal->atribmod = elmg;
             enemigoReal->buff = false;
+            if (enemigoReal->tipo == 0) {
+                printf("%s manda a quitarle el equipo de campaña a Richy y lo deja sin protección durante 3 turnos! (-2 defensa fisica)\n", enemigoReal->nombre);
+            } else {
+                printf("Richy encuentra una irregularidad en la declaración patrimonial de %s y lo deja expuesto durante 3 turnos! (-2 defensa fisica)\n", enemigoReal->nombre);
+            }
             break;
         case 4:
             enemigoReal->Defmag = enemigoReal->Defmag - 2;
             enemigoReal->duracef = 3; // same same same 
             enemigoReal->atribmod = elmg;
             enemigoReal->buff = false;
+            if (enemigoReal->tipo == 0) {
+                printf("%s presenta 46 capturas de pantalla fuera de contexto y destruye temporalmente la narrativa de Richy! (-2 defensa magica durante 3 turnos)\n", enemigoReal->nombre);
+            } else {
+                printf("Richy saca una presentación de PowerPoint con 83 diapositivas y destruye la narrativa de %s! (-2 defensa magica durante 3 turnos)\n", enemigoReal->nombre);
+            }
             break;
         default:
             break;
