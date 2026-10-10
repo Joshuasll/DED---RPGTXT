@@ -7,6 +7,12 @@ Ximena Sanchez Lomeli
 Jonathan Joshua Sosa Llamas
 */
 
+typedef struct{
+    char nombre[30];
+    int atributo;
+    int poder;
+}objeto;
+
 typedef struct {
     char nombre[30]; // puse de tamaño 30 solo por si acaso 
     int HP;
@@ -16,11 +22,14 @@ typedef struct {
     int Attkmag;
     int Deffis;
     int Defmag;
-    int tipo; //para saber si es humano o villano       0 -> 👤 humano  1 -> 👹 enemigo
+    int tipo; //para saber si es humano o villano       
     int escudo; //para mi funcion
     int duracef; // duracef -> duracion de efecto(s)
     int atribmod; // para guardar el atributo modificado y reconocer cual es
     bool buff; // fue mejora o disminucion? es decir true -> +2 o false -> -2 para el aumento o disminucion de atributos aka para poder recordar que hacerle tras los 3 turnos 
+    int jerez;
+    bool evacion;
+    objeto *inventario[5];
 } personaje;
 
 /*           Motor de turnos                
@@ -349,12 +358,99 @@ return 0;
 }
 
 // si vas a hacer una funcion de ataque agrega este if al inicio de tu funcion para q pueda usar el escudo pls
-
-
 /*  este merito ⬇
 if(usar_escudo(//nombre del q atacaras)){
     return;
+}
+if(botellita_de_jerez(defensor, atacante, danyo_caus)){
+return;
 }*/
+
+
+//generar un reverzazo
+void add_revezazo(void *self){
+    personaje *usuario= (personaje*)self;
+    usuario->jerez ++;
+    if(usuario->tipo==0){
+        printf("");
+        printf("conseguiste +1 reverzazo\n"); 
+    }
+    else{
+        printf("");
+        printf("consiguio +1 reverzazo");
+    }
+}
+
+//utilizar el reverzazo
+int botellita_de_jerez(personaje *defensor, personaje *atacante, int dano){
+    if(defensor->jerez == 0){
+        return 0;
+    }
+    if(defensor->tipo == 0){
+        int eleccion;
+        
+        printf("Tienes %d reverzazos, quieres usar uno?\n", defensor->jerez);
+        printf("1. si\n 2. no");
+        scanf("%d", &eleccion);
+
+        if(eleccion==1){
+            defensor->jerez --;
+            int dano_ref= dano/2;
+            atacante->dano += dano_ref;
+            printf("botellita de jerez todo lo que digas sera al revez\n");
+            printf("lograste bloquear su ataque, y le devolviste %d de daño\n", dano_ref);
+            return 1;
+        }}
+        else{ 
+            defensor->jerez --;
+            int dano_ref= dano/2;
+            atacante->dano += dano_ref;
+            printf("botellita de jerez todo lo que digas sera al revez\n");
+            printf("El presidente ha bloqueado tu ataque, y te devolvio %d de daño\n", dano_ref);
+            return 1;
+        }
+    return 0;
+}
+
+void ataque_fisico(personaje *atacante, personaje *defensor){
+    int danyo_caus;
+    danyo_caus= atacante->Attkfis - defensor->Deffis;
+    if(danyo_caus <= 0){
+        danyo_caus=0;
+        printf("no le atinan al golpe, les falta calle\n"); 
+    }else{
+    if(usar_escudo(defensor)){
+    return;
+    }
+    if(botellita_de_jerez(defensor, atacante, danyo_caus)){
+    return;
+    }
+    defensor->dano += danyo_caus;
+
+    printf("%s le metio un madrazo a %s\n", atacante->nombre, defensor->nombre);
+    printf("ahora %s tiene %d de daño, ¡aguas!\n", defensor->nombre, defensor->dano);
+}}
+
+//funcion de evadir como en la presentacion dice la presentacion
+void evadir(personaje *usuario){
+    usuario->evacion = true;
+    printf("%s intento evadir el proximo ataque\n", usuario->nombre);
+}
+void comprb_evadir(personaje *usuario){
+    if(usuario->evacion == false){
+        return 0;
+    }
+    usuario->evacion = false;
+    if(rand()%2 == 0){
+        printf("esquivaste la bala\n");
+        return 1;
+    }
+    else{
+        printf("igual te dio, pelaste\n");
+        return 0;
+    }
+}
+
 
 /*
 [0] -> nuestro personaje
