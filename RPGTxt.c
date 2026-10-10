@@ -157,17 +157,17 @@ nadotaaaaaa - UPDATE -> ya quedó
 void modifAtributos(void * self, void * enemigo) { // como quiero poder usar la magia sobre mi mismo o el enemigo, mejor aclarar bien a quien le dare 
     personaje * selfReal = (personaje *) self; // igualito que arriba, tengo que hacer que sea personaje 
     personaje * enemigoReal = (personaje *) enemigo;
-
+    
     int elaf; // elaf por eleccion afectado jajajajj
     int elmg; // elmg por eleccion de magia 
-
+    
     // seleccion de a quien afectar
-
+    
     printf("A quien quieres afectar?\n");
     printf("1 -> A ti mismo\n");
     printf("2 -> Al enemigo\n");
     scanf("%d", &elaf);
-
+    
     if (elaf == 1 ) { // aka que me afecte a mi mismo -> SELF👤
         // seleccion de atributo a modificar
         printf("Que atributo quieres mejorar durante 3 turnos?\n");
@@ -179,7 +179,7 @@ void modifAtributos(void * self, void * enemigo) { // como quiero poder usar la 
         // SWITCH para cuando es al SELF 
         switch (elmg)
         {
-        case 1:
+            case 1:
             selfReal->Attkfis = selfReal->Attkfis + 2; // si pusiera solo selfReal->Attkfis+2 y attkfis = 5 daria 7 pero no se guardaria, so necesito asignar 
             selfReal->duracef = 4; // aqui lo que hago es que agrego la duracion de 3 turnos, NOTA -> use 4 porque al usar la magia se descuenta uno inmediatamente, ponerlo a 4 fue una solución facil y rapida tbh 
             selfReal->atribmod = elmg; // con esto recordare el atributo modificado
@@ -190,7 +190,7 @@ void modifAtributos(void * self, void * enemigo) { // como quiero poder usar la 
                 printf("%s completó una gira de campaña cargando bebes, lonas y cajas de despensa, lo que l@ hace pegar más fuerte! (+2 ataque físico)\n", selfReal->nombre);
             }
             break;
-        case 2:
+            case 2:
             selfReal->Attkmag = selfReal->Attkmag + 2;
             selfReal->duracef = 4; // igual aca
             selfReal->atribmod = elmg; // same 
@@ -201,7 +201,7 @@ void modifAtributos(void * self, void * enemigo) { // como quiero poder usar la 
                 printf("%s empieza a citar encuestas que nadie sabe de dónde salieron y su poder mágico aumenta! (+2 ataque mágico)\n", selfReal->nombre);
             }
             break;
-        case 3:
+            case 3:
             selfReal->Deffis = selfReal->Deffis + 2;
             selfReal->duracef = 4; // igual aca
             selfReal->atribmod = elmg;
@@ -212,7 +212,7 @@ void modifAtributos(void * self, void * enemigo) { // como quiero poder usar la 
                 printf("%s se pone chaleco antibalas de campaña y ahora está blindado durante 3 turnos! (+2 defensa física)\n", selfReal->nombre);
             }
             break;
-        case 4:
+            case 4:
             selfReal->Defmag = selfReal->Defmag + 2;
             selfReal->duracef = 4; // los 4 casos 
             selfReal->atribmod = elmg;
@@ -223,7 +223,7 @@ void modifAtributos(void * self, void * enemigo) { // como quiero poder usar la 
                 printf("%s lanza un comunicado de 12 cuartillas negándolo absolutamente todo y obtiene +2 defensa magica durante 3 turnos! (+2 defensa mágica)\n", selfReal->nombre);
             }
             break;
-        default:
+            default:
             break;
         }
     } else if (elaf == 2 ) { // aka que afecte al enemigo -> ENEMIGO👹
@@ -236,18 +236,18 @@ void modifAtributos(void * self, void * enemigo) { // como quiero poder usar la 
         // SWITCH para cuando es al ENEMIGO, al que LE RESTARÉ, el DEBUFF
         switch (elmg)
         {
-        case 1:
+            case 1:
             enemigoReal->Attkfis = enemigoReal->Attkfis - 2; // asigno y cambio la variable para que se entienda que ahora vamos por tu enemigo tbh 
             enemigoReal->duracef = 3; // tmb aca asigno duracion de tiempo libre 
             enemigoReal->atribmod = elmg;
             enemigoReal->buff = false;
-             if (selfReal->tipo == 0) {
-                 printf("Richy acusa a %s en cadena nacional y ahora le tiembla la mano durante 3 turnos! (-2 ataque físico)\n", enemigoReal->nombre);
-                } else {
+            if (selfReal->tipo == 0) {
+                printf("Richy acusa a %s en cadena nacional y ahora le tiembla la mano durante 3 turnos! (-2 ataque físico)\n", enemigoReal->nombre);
+            } else {
                 printf("%s filtra una investigación en contra de Richy y le entra miedo político durante 3 turnos! (-2 ataque físico)\n", selfReal->nombre);
             }
             break;
-        case 2:
+            case 2:
             enemigoReal->Attkmag = enemigoReal->Attkmag - 2;
             enemigoReal->duracef = 3; // same here
             enemigoReal->atribmod = elmg;
@@ -258,7 +258,7 @@ void modifAtributos(void * self, void * enemigo) { // como quiero poder usar la 
                 printf("%s saca una encuesta donde Richy sale con 2 por ciento de intención de voto, su magia se debilita 3 turnos! (-2 ataque mágico)\n", selfReal->nombre);
             }
             break;
-        case 3:
+            case 3:
             enemigoReal->Deffis = enemigoReal->Deffis - 2;
             enemigoReal->duracef = 3; // same here
             enemigoReal->atribmod = elmg;
@@ -269,7 +269,7 @@ void modifAtributos(void * self, void * enemigo) { // como quiero poder usar la 
                 printf("%s manda a quitarle el equipo de campaña a Richy y lo deja sin protección durante 3 turnos! (-2 defensa fisica)\n", selfReal->nombre);
             }
             break;
-        case 4:
+            case 4:
             enemigoReal->Defmag = enemigoReal->Defmag - 2;
             enemigoReal->duracef = 3; // same same same 
             enemigoReal->atribmod = elmg;
@@ -280,12 +280,12 @@ void modifAtributos(void * self, void * enemigo) { // como quiero poder usar la 
                 printf("%s presenta 46 capturas de pantalla fuera de contexto y destruye temporalmente la narrativa de Richy! (-2 defensa magica durante 3 turnos)\n", selfReal->nombre);
             }
             break;
-        default:
+            default:
             break;
         }
-    }
-
+     }
 }
+
 
 // void bolafuego(void ¨)
 void bolafuego(void * objetivo, void * emisor) { // necesito atacante y atacado
