@@ -40,7 +40,7 @@ void motordeTurnos (personaje * jugador, personaje * enemigo) { // aqui necesito
         if (jugador->juega == false ) { // reviso si pierde turno o no
             jugador->juega = true; // corrijo y dejo listo para la siguiente tirada 
         } else {
-            // accion normal
+        // accion normal
         }
         // por si hay buff o debuff - humano
         if (jugador->duracef > 0) {
@@ -84,13 +84,14 @@ void motordeTurnos (personaje * jugador, personaje * enemigo) { // aqui necesito
                 } // cierre switch debuff
             }
         }
+    }
 
         // Enemigo
         if (enemigo->dano < enemigo->HP) {
             if (enemigo->juega == false ) {
                 enemigo->juega = true; // de nuevo corrijo pero para enemigo 
                 } else {
-                    // accion normal
+                // accion normal
                 }
                 if (enemigo->duracef > 0) {
             enemigo->duracef --; // voy restando al contador de turnos que da duracion del buff o debuff 
@@ -137,9 +138,6 @@ void motordeTurnos (personaje * jugador, personaje * enemigo) { // aqui necesito
         }
     }
 }
-}
-
-
 
 
 
@@ -170,28 +168,47 @@ void modifAtributos(void * self, void * enemigo) { // como quiero poder usar la 
     int elaf; // elaf por eleccion afectado jajajajj
     int elmg; // elmg por eleccion de magia 
     
-    // seleccion de a quien afectar
+    // seleccion de a quien afectar -> peero esto solo funciona para el humano, para nosotros
     
-    printf("A quien quieres afectar?\n");
-    printf("1 -> A ti mismo\n");
-    printf("2 -> Al enemigo\n");
-    scanf("%d", &elaf);
+    // adición para la cpu
+    /* rand() genera un numero aleatorio, normalmente sale uno grande 
+       para limitar su rango -> rand() % [numero]
+       peero
+       si quiero que o¿por ejemplo se pueda solo 1 y 2 como abajo
+       rand() % 2+1 <- es lo ideal 
+    */
+    // control si es humano o cpu 
+    if (selfReal->tipo == 0) {
+        printf("A quien quieres afectar?\n");
+        printf("1 -> A ti mismo\n");
+        printf("2 -> Al enemigo\n");
+        scanf("%d", &elaf);
+    } else {
+        elaf = rand() % 2+1; // esto para que abarque hasta el 2 
+    }
+    
     
     if (elaf == 1 ) { // aka que me afecte a mi mismo -> SELF👤
         // seleccion de atributo a modificar
-        printf("Que atributo quieres mejorar durante 3 turnos?\n");
-        printf("1 - Ataque Fisico\n");
-        printf("2 - Ataque magico\n");
-        printf("3 - Defensa fisica\n");
-        printf("4 - Defensa magica\n");
-        scanf("%d", &elmg); // utilizo las vairables temporales para asi pasar a los casos con el switch
+        // control si es humano o cpu
+        if (selfReal->tipo == 0) {
+            printf("Que atributo quieres mejorar durante 3 turnos?\n");
+            printf("1 - Ataque Fisico\n");
+            printf("2 - Ataque magico\n");
+            printf("3 - Defensa fisica\n");
+            printf("4 - Defensa magica\n");
+            scanf("%d", &elmg); // utilizo las vairables temporales para asi pasar a los casos con el switch
+            } else {
+                elmg = rand() % 4+1;
+            }
+
         // SWITCH para cuando es al SELF 
         switch (elmg)
         {
             case 1:
             selfReal->Attkfis = selfReal->Attkfis + 2; // si pusiera solo selfReal->Attkfis+2 y attkfis = 5 daria 7 pero no se guardaria, so necesito asignar 
             selfReal->duracef = 4; // aqui lo que hago es que agrego la duracion de 3 turnos, NOTA -> use 4 porque al usar la magia se descuenta uno inmediatamente, ponerlo a 4 fue una solución facil y rapida tbh 
-            selfReal->atribmod = elmg; // con esto recordare el atributo modificado
+            selfReal->atribmod = elmg; // con esto recordare el atributo modificado para despues regresarlo a la normalidad 
             selfReal->buff = true;
             if (selfReal->tipo == 0) {
                 printf("Richy entrenó gym la semana pasada y ahora pega más fuerte durante 3 turnos! (+2 ataque físico)\n");
@@ -200,7 +217,7 @@ void modifAtributos(void * self, void * enemigo) { // como quiero poder usar la 
             }
             break;
             case 2:
-            selfReal->Attkmag = selfReal->Attkmag + 2;
+            selfReal->Attkmag = selfReal->Attkmag + 2; // buff
             selfReal->duracef = 4; // igual aca
             selfReal->atribmod = elmg; // same 
             selfReal->buff = true;
@@ -211,7 +228,7 @@ void modifAtributos(void * self, void * enemigo) { // como quiero poder usar la 
             }
             break;
             case 3:
-            selfReal->Deffis = selfReal->Deffis + 2;
+            selfReal->Deffis = selfReal->Deffis + 2; // buff
             selfReal->duracef = 4; // igual aca
             selfReal->atribmod = elmg;
             selfReal->buff = true;
@@ -222,7 +239,7 @@ void modifAtributos(void * self, void * enemigo) { // como quiero poder usar la 
             }
             break;
             case 4:
-            selfReal->Defmag = selfReal->Defmag + 2;
+            selfReal->Defmag = selfReal->Defmag + 2; // buff
             selfReal->duracef = 4; // los 4 casos 
             selfReal->atribmod = elmg;
             selfReal->buff = true;
@@ -236,12 +253,18 @@ void modifAtributos(void * self, void * enemigo) { // como quiero poder usar la 
             break;
         }
     } else if (elaf == 2 ) { // aka que afecte al enemigo -> ENEMIGO👹
-        printf("Que atributo quieres reducir durante 3 turnos?\n");
-        printf("1 - Ataque Fisico\n");
-        printf("2 - Ataque magico\n");
-        printf("3 - Defensa fisica\n");
-        printf("4 - Defensa magica\n");
-        scanf("%d", &elmg);
+
+        // control si es humano o cpu
+        if (selfReal->tipo == 0) {
+            printf("Que atributo quieres reducir durante 3 turnos?\n");
+            printf("1 - Ataque Fisico\n");
+            printf("2 - Ataque magico\n");
+            printf("3 - Defensa fisica\n");
+            printf("4 - Defensa magica\n");
+            scanf("%d", &elmg);
+        } else {
+            elmg = rand() %4+1;
+        }
         // SWITCH para cuando es al ENEMIGO, al que LE RESTARÉ, el DEBUFF
         switch (elmg)
         {
@@ -304,10 +327,12 @@ void bolafuego(void * objetivo, void * emisor) { // necesito atacante y atacado
     personaje * emiReal = (personaje *) emisor; // y quien tirará el ataque 
     danof = emiReal->Attkmag - (objReal->Defmag); // el daño por fuego lo calculo a partir del ataque magico del emisor - la defensa magica de quien lo recibe 
 
-    if (objReal->Defmag > emiReal->Attkmag || objReal->Defmag == emiReal->Attkmag) {
-        objReal->dano ++;
+    if (objReal->Defmag > emiReal->Attkmag) {
+        objReal->dano = objReal->dano + 0;
+        printf("La magia falló\n");
     } else {
         objReal->dano = objReal->dano + danof;
+        printf("%s presenta una denuncia termonuclear y quema a %s por %d de daño\n", emiReal->nombre, objReal->nombre, danof);
     }
 }
 
@@ -412,31 +437,12 @@ int botellita_de_jerez(personaje *defensor, personaje *atacante, int dano){
     return 0;
 }
 
-void ataque_fisico(personaje *atacante, personaje *defensor){
-    int danyo_caus;
-    danyo_caus= atacante->Attkfis - defensor->Deffis;
-    if(danyo_caus <= 0){
-        danyo_caus=0;
-        printf("no le atinan al golpe, les falta calle\n"); 
-    }else{
-    if(usar_escudo(defensor)){
-    return;
-    }
-    if(botellita_de_jerez(defensor, atacante, danyo_caus)){
-    return;
-    }
-    defensor->dano += danyo_caus;
-
-    printf("%s le metio un madrazo a %s\n", atacante->nombre, defensor->nombre);
-    printf("ahora %s tiene %d de daño, ¡aguas!\n", defensor->nombre, defensor->dano);
-}}
-
 //funcion de evadir como en la presentacion dice la presentacion
-void evadir(personaje *usuario){
+void evadir(personaje *usuario) {
     usuario->evacion = true;
     printf("%s intento evadir el proximo ataque\n", usuario->nombre);
 }
-void comprb_evadir(personaje *usuario){
+int comprb_evadir(personaje *usuario){ // ximena, cambie la funcion a int porque al ser void y regresar numero me marcaba error por todas partes y me andaba haciendo bolas JAJAJAJJA
     if(usuario->evacion == false){
         return 0;
     }
@@ -450,6 +456,31 @@ void comprb_evadir(personaje *usuario){
         return 0;
     }
 }
+
+void ataque_fisico(personaje *atacante, personaje *defensor){
+    int danyo_caus;
+    danyo_caus= atacante->Attkfis - defensor->Deffis;
+    if(danyo_caus <= 0){
+        danyo_caus=0;
+        printf("no le atinan al golpe, les falta calle\n"); 
+    } else {
+    if (comprb_evadir(defensor)) {
+    return;
+    } else {
+    if(usar_escudo(defensor)){
+    return;
+    }
+    if(botellita_de_jerez(defensor, atacante, danyo_caus)){
+    return;
+    }
+    defensor->dano += danyo_caus;
+
+    printf("%s le metio un madrazo a %s\n", atacante->nombre, defensor->nombre);
+    printf("ahora %s tiene %d de daño, ¡aguas!\n", defensor->nombre, defensor->dano);
+        }
+    }
+}
+
 
 
 /*
