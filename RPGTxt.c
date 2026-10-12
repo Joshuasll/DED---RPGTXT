@@ -30,6 +30,7 @@ typedef struct {
     int jerez;
     bool evacion;
     objeto *inventario[5];
+    void (*magias [3])(void *, void *); // aqui como tal uso lo que puso el profe, que sea un arreglo a punteros a funcion las magias y que solo se pueden 3 
 } personaje;
 
 /*           Motor de turnos                
