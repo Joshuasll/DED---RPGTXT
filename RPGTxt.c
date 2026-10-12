@@ -145,11 +145,16 @@ void motordeTurnos (personaje * jugador, personaje * enemigo) { // aqui necesito
 /*           Mis 3 funciones de magia         */
 
 // Perder turno 
-void magiaPerderTurno(void * enemigo) { // con el void * enemigo, apunto al enemigo que quiero afectar 
+void magiaPerderTurno(void * enemigo, void * emisor) { // con el void * enemigo, apunto al enemigo que quiero afectar 
     personaje * enemigoReal = (personaje *) enemigo; // como enemigo es void, uso otro de personaje para poder acceder al "menu" de datos y casteo a enemigo a personaje
+    personaje * emisorReal = (personaje *) emisor;
     if (comprb_evadir(enemigoReal) == true) { // aqui pues como evadir funciona para todo, de una vez lo agregué a mi magia
         printf("%s lo evadio y no pasó nada!\n", enemigoReal->nombre);
         return;
+    }
+    if(enemigoReal->Defmag > emisorReal->Attkmag) { // aqui comparo tambien usando la regla del profe, si la def magica del enemigo es mayor al ataque, pues nachos
+        printf("La magia no sirvió\n");
+        return; // aqui corto a nivel funcion 
     }
     enemigoReal->juega = false; // como enemigoReal como tal tiene dentro al enemigo apuntado, estoy modificando el booleano de si juega o no el wey
     if (enemigoReal->tipo == 0) {
@@ -257,13 +262,17 @@ void modifAtributos(void * self, void * enemigo) { // como quiero poder usar la 
             break;
         }
     } else if (elaf == 2 ) { // aka que afecte al enemigo -> ENEMIGO👹
-
         if (comprb_evadir(enemigoReal) == true) { // aqui tambien toco implementar o incluir el que primero cheque si evadieron o no, porque pues ayudará a quien lo use a librar muchas cosas
             printf("%s evadio exitosamente el intento de ataque mágico! \n", enemigoReal->nombre);
             return; // es como la TERCERA vez que lo olvido, el return aqui como tal lo que hace es que corta funcion porque 
             /*  break -> salir de un ciclo for, while o switch
                 return -> saca de una funcion completa
             */
+        }
+
+         if (enemigoReal->Defmag > selfReal->Attkmag){ // como en el documento dice que si la defensa magica es mayor no surte efecto, ues toca comparar primero
+            printf("La magia no surtió efecto! \n"); // simplemente inform
+            return; // cortan,
         }
 
         // control si es humano o cpu
