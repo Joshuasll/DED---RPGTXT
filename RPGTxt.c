@@ -360,7 +360,7 @@ void bolafuego(void * objetivo, void * emisor) { // necesito atacante y atacado
         printf("La magia falló\n");
     } else {
         objReal->dano = objReal->dano + danof;
-        printf("%s presenta una denuncia termonuclear y quema a %s por %d de daño\n", emiReal->nombre, objReal->nombre, danof);
+        printf("%s presenta una denuncia termonuclear y quema a %s por %d de daño (le prendió fuego a un expediente y se lo aventó a %s)\n", emiReal->nombre, objReal->nombre, danof, objReal->nombre);
     }
 }
 
@@ -526,7 +526,7 @@ int main( ) {
     personaje personajess[5] = {
         {"Richy Anaya", 100, 0, true, 15, 14, 5, 4, 0, 0, 0, 0, false}, // jugador
         {"Lemus", 75, 0, true, 12, 10, 3, 3, 1, 0, 0, 0, false}, // easy
-        {"AMLO", 90, 0, true, 16, 14, 5, 4, 1, 0, 0, 0, false}, // medium
+        {"AMLOVE", 90, 0, true, 16, 14, 5, 4, 1, 0, 0, 0, false}, // medium
         {"ShameBee", 110, 0, true, 19, 18, 7, 6, 1, 0, 0, 0, false}, // hard 
         {"Trump", 140, 0, true, 23, 21, 9, 8, 1, 0, 0, 0, false} // final boss 
     };
@@ -542,6 +542,71 @@ int main( ) {
     printf("|            2. Salir                     |\n");
     printf("|                                         |\n");
     printf("|=========================================|\n");
+    int start; // aqui use este para el start o salida como variable local de main
+    scanf("%d", &start); // scanf simple
+    personaje * jugador = personajess; // apuntador de tipo personaje, llamado jugador al arreglo de arriba de personajess, con el usare mucha aritmetica de punteros 
+
+    if (start == 1) {
+        // continuo juego, empiezo por dar nombre a mi jugador/personaje creado
+        printf("¿Cuál será el nombre de tu guerrero? Ingresalo y presiona ENTER\n");
+        scanf(" %29[^\n]", jugador->nombre); // con el 29 me aseguro que no se pase de char's, aka que no se pasen de rosca con el nombre pero eso no me deja poner nombres con espacio - UPDATE, ya quedo, ya acepta espacios 
+        printf("Nombre guardado.\n");
+
+        // eleccion de magias
+
+        printf("Tu personaje necesitará más que solo sus manos para ganar estas elecciones, elige 3 de las siguientes 5 magias\n");
+        printf("Ingresa el número y luego enter, uno por uno*\n");
+        printf("\n");
+        for (int i = 0; i < 3; i++) { // ciclo para ir integrando las magias al arreglo de punteros a funcion de magias en vez de imprimir 3 veces o montones de veces todo el menu
+            int pickmagia; // mejor que por iteracion esta variable se vaya reiniciando, creo que funciona 
+            printf("1. Perder turno -> Hacer que tu oponente pierda su turno siguiente\n");
+            printf("2. Modificación de atributos -> Generar un buff a ti o un debuff a la oposición\n");
+            printf("3. Bola de fuego -> Bola de fuego que dará quemazón a tu rival \n");
+            printf("4. Escudo -> \n"); 
+            printf("5. Reversazo -> \n");
+            scanf("%d", &pickmagia); // tomo cual fue la eleccion del jugador y justo con un switch ire metiendo la eleccion a cada una de las 3 posiciones
+
+            switch (pickmagia) // el switch
+            {
+            case 1:
+                *(jugador->magias + i) = magiaPerderTurno; // asignación a partir de desreferenciar el apuntador jugador, que manda llamar las magias y la aritmetica de posiciones usando i 
+                break;
+            case 2:
+                *(jugador->magias + i) = modifAtributos;
+                break;
+            case 3:
+                *(jugador->magias + i) = bolafuego;
+                break;
+            case 4:
+                *(jugador->magias + i) = add_escudo;
+                break;
+            case 5:
+                *(jugador->magias + i) = add_revezazo;
+                break;
+            default:
+                printf("Opción inválida, utiliza un número dentro de las opciones disponibles\n");
+                break;
+                break;
+            } // llaves -> FIN SWITCH
+        } // llaves -> FIN FOR 
+
+        
+    } else if (start == 2) {
+        return 0;
+    }
 
     return 0;
 }
+
+
+/*                                   ~ NOTAS DE GOOGLEADAS ~          
+|   - " " en un scanf hace que e ignore cualquier espacio o ENTER que haya quedado pendiente de otros scanf                                     |
+|   - [^\n] -> lee todo mientras no haya un salto de línea, aka lee aunque hayan espacios (este lo ocupé para hacer que el scanf del nombre del |
+|     jugador funcionara con espacios)                                                                                                          |
+|   - %s como tal lee solo una palabra                                                                                                          |
+|   - %[^\n] -> lee hasta que haya un ENTER, acepta espacios -> para que funcione con el scanf del nombre, le necesito agregar el espacio al    |
+|     inicio
+|
+|
+|
+|*/
