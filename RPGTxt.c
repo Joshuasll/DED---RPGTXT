@@ -585,13 +585,13 @@ int main( ) {
                 break;
             default:
                 printf("Opción inválida, utiliza un número dentro de las opciones disponibles\n");
-                break;
+                i--;
                 break;
             } // llaves -> FIN SWITCH
         } // llaves -> FIN FOR 
 
         
-    } else if (start == 2) {
+    } /* llaves fin del if START */ else if (start == 2) {
         return 0;
     }
 
