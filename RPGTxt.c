@@ -530,5 +530,18 @@ int main( ) {
         {"ShameBee", 110, 0, true, 19, 18, 7, 6, 1, 0, 0, 0, false}, // hard 
         {"Trump", 140, 0, true, 23, 21, 9, 8, 1, 0, 0, 0, false} // final boss 
     };
+
+    printf("|=========================================|\n");
+    printf("|                                         |\n");
+    printf("|             Obrador Souls               |\n");
+    printf("|        Amparos, madrazos y magia        |\n");
+    printf("|                                         |\n");
+    printf("|=========================================|\n");
+    printf("|                                         |\n");
+    printf("|            1. Iniciar juego             |\n");
+    printf("|            2. Salir                     |\n");
+    printf("|                                         |\n");
+    printf("|=========================================|\n");
+
     return 0;
 }
