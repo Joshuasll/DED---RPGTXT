@@ -366,8 +366,9 @@ void bolafuego(void * objetivo, void * emisor) { // necesito atacante y atacado
 
 //funciones de ximena
 
+// MAGIA
 //para generar un escudo
-void add_escudo(void *self){
+void add_escudo(void *self, void *enemigo){ // aqui aunque no usemos enemigo, le puse el void * enemigo para que como tal lleve la misma firma y las pueda meter sin lios a puntero y arreglo de las magias o com sea 
     personaje *usuario = (personaje*)self;
     usuario->escudo ++ ;
     if(usuario->tipo==0){
@@ -418,9 +419,9 @@ if(botellita_de_jerez(defensor, atacante, danyo_caus)){
 return;
 }*/
 
-
+// MAGIA
 //generar un reverzazo
-void add_revezazo(void *self){
+void add_revezazo(void *self, void * enemigo){ // igual aca, necesito que las 5 magias lleven firma igual para que jalen bien todas al agregarlas 
     personaje *usuario= (personaje*)self;
     usuario->jerez ++;
     if(usuario->tipo==0){
