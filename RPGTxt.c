@@ -147,11 +147,15 @@ void motordeTurnos (personaje * jugador, personaje * enemigo) { // aqui necesito
 // Perder turno 
 void magiaPerderTurno(void * enemigo) { // con el void * enemigo, apunto al enemigo que quiero afectar 
     personaje * enemigoReal = (personaje *) enemigo; // como enemigo es void, uso otro de personaje para poder acceder al "menu" de datos y casteo a enemigo a personaje
+    if (comprb_evadir(enemigoReal) == true) { // aqui pues como evadir funciona para todo, de una vez lo agregué a mi magia
+        printf("%s lo evadio y no pasó nada!\n", enemigoReal->nombre);
+        return;
+    }
     enemigoReal->juega = false; // como enemigoReal como tal tiene dentro al enemigo apuntado, estoy modificando el booleano de si juega o no el wey
     if (enemigoReal->tipo == 0) {
-        printf("Chicken little levanta un amparo y hace que el enemigo pierda turno\n");
-    } else {
         printf("El partido político al mando manda instrucciones de retener en el aeropuerto a Anaya y pierde su turno\n");
+    } else {
+        printf("Richy little levanta un amparo y hace que el enemigo pierda turno\n");
     }
 }
 /*
@@ -254,6 +258,14 @@ void modifAtributos(void * self, void * enemigo) { // como quiero poder usar la 
         }
     } else if (elaf == 2 ) { // aka que afecte al enemigo -> ENEMIGO👹
 
+        if (comprb_evadir(enemigoReal) == true) { // aqui tambien toco implementar o incluir el que primero cheque si evadieron o no, porque pues ayudará a quien lo use a librar muchas cosas
+            printf("%s evadio exitosamente el intento de ataque mágico! \n", enemigoReal->nombre);
+            return; // es como la TERCERA vez que lo olvido, el return aqui como tal lo que hace es que corta funcion porque 
+            /*  break -> salir de un ciclo for, while o switch
+                return -> saca de una funcion completa
+            */
+        }
+
         // control si es humano o cpu
         if (selfReal->tipo == 0) {
             printf("Que atributo quieres reducir durante 3 turnos?\n");
@@ -327,7 +339,13 @@ void bolafuego(void * objetivo, void * emisor) { // necesito atacante y atacado
     personaje * emiReal = (personaje *) emisor; // y quien tirará el ataque 
     danof = emiReal->Attkmag - (objReal->Defmag); // el daño por fuego lo calculo a partir del ataque magico del emisor - la defensa magica de quien lo recibe 
 
-    if (objReal->Defmag > emiReal->Attkmag) {
+    // comprobacion para evadir/evasion
+    if (comprb_evadir(objReal) == true) { // utilizo de una vez el comprobar evadir con el objetivo, pues es quien recibira el quemazon en cuestion
+        printf("%s evadió exitosamente el ataque!\n", objReal->nombre);
+        return;
+    }
+
+    if (objReal->Defmag > emiReal->Attkmag) { // aqui como tal solo hago la comprobacion de daño porque si la defensa era mayor, no hace nada
         objReal->dano = objReal->dano + 0;
         printf("La magia falló\n");
     } else {
@@ -438,6 +456,7 @@ int botellita_de_jerez(personaje *defensor, personaje *atacante, int dano){
 }
 
 //funcion de evadir como en la presentacion dice la presentacion
+// tmb subi estas aca arriba porque como tal con ataque fisico debes checar si evadio o no, asi que ocupaba tener esto arriba para que ataquefisico que esta abajo lo agarrara
 void evadir(personaje *usuario) {
     usuario->evacion = true;
     printf("%s intento evadir el proximo ataque\n", usuario->nombre);
