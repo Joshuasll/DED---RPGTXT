@@ -41,15 +41,19 @@ void inicializar_inventario(personaje *jugador){//inicializar en NULL para evita
     }
 }
 
+    void turno_cpu(personaje *enemigo, personaje *jugador);
+    void turno(personaje *usuario, personaje *enemigo); //para q motor de turnos sepa q usara esas funciones
+
 /*           Motor de turnos                
     ya lo necesitaba para lo de la reduccion de atributos y asi, si no estaba medio matado solo hacerlo al aire     */
 void motordeTurnos (personaje * jugador, personaje * enemigo) { // aqui necesito que los turnos controlen a los 2 
+
     while ((jugador->dano < jugador->HP) && (enemigo->dano < enemigo->HP)) { // esta linea la pongo porque en realidad necesito que hayan turnos mientras la batalla siga aka que sigan vivos los dos 
         // Humano
         if (jugador->juega == false ) { // reviso si pierde turno o no
             jugador->juega = true; // corrijo y dejo listo para la siguiente tirada 
         } else {
-        // accion normal
+        turno(jugador, enemigo); 
         }
         // por si hay buff o debuff - humano
         if (jugador->duracef > 0) {
@@ -100,7 +104,7 @@ void motordeTurnos (personaje * jugador, personaje * enemigo) { // aqui necesito
             if (enemigo->juega == false ) {
                 enemigo->juega = true; // de nuevo corrijo pero para enemigo 
                 } else {
-                // accion normal
+                turno_cpu(enemigo, jugador);
                 }
                 if (enemigo->duracef > 0) {
             enemigo->duracef --; // voy restando al contador de turnos que da duracion del buff o debuff 
@@ -228,6 +232,10 @@ void modifAtributos(void * self, void * enemigo) { // como quiero poder usar la 
     if (elaf == 1 ) { // aka que me afecte a mi mismo -> SELF👤
         // seleccion de atributo a modificar
         // control si es humano o cpu
+        if(selfReal->duracef > 0){ //agregue este if para q no se sobreescriba
+            printf("ya hay una modificacion activa\n");
+            return;
+        }
         if (selfReal->tipo == 0) {
             printf("Que atributo quieres mejorar durante 3 turnos?\n");
             printf("1 - Ataque Fisico\n");
@@ -290,6 +298,10 @@ void modifAtributos(void * self, void * enemigo) { // como quiero poder usar la 
             break;
         }
     } else if (elaf == 2 ) { // aka que afecte al enemigo -> ENEMIGO👹
+            if(enemigoReal->duracef > 0){ //agregue este if para q no se sobreescriba aqui tmb
+            printf("ya hay una modificacion activa\n");
+            return;
+        }
         if (comprb_evadir(enemigoReal) == true) { // aqui tambien toco implementar o incluir el que primero cheque si evadieron o no, porque pues ayudará a quien lo use a librar muchas cosas
             printf("%s evadio exitosamente el intento de ataque mágico! \n", enemigoReal->nombre);
             return; // es como la TERCERA vez que lo olvido, el return aqui como tal lo que hace es que corta funcion porque 
@@ -368,30 +380,6 @@ void modifAtributos(void * self, void * enemigo) { // como quiero poder usar la 
 }
 
 
-// void bolafuego(void ¨)
-void bolafuego(void * emisor, void * objetivo) { // necesito atacante y atacado
-    int danof = 0;
-
-    personaje * objReal = (personaje *) objetivo; // es decir, quien recibirá el ataque
-    personaje * emiReal = (personaje *) emisor; // y quien tirará el ataque 
-    danof = emiReal->Attkmag - (objReal->Defmag); // el daño por fuego lo calculo a partir del ataque magico del emisor - la defensa magica de quien lo recibe 
-
-    // comprobacion para evadir/evasion
-    if (comprb_evadir(objReal) == true) { // utilizo de una vez el comprobar evadir con el objetivo, pues es quien recibira el quemazon en cuestion
-        printf("%s evadió exitosamente el ataque!\n", objReal->nombre);
-        return;
-    }
-
-    if (objReal->Defmag > emiReal->Attkmag) { // aqui como tal solo hago la comprobacion de daño porque si la defensa era mayor, no hace nada
-        objReal->dano = objReal->dano + 0;
-        printf("La magia falló\n");
-    } else {
-        objReal->dano = objReal->dano + danof;
-        printf("%s presenta una denuncia termonuclear y quema a %s por %d de daño (le prendió fuego a un expediente y se lo aventó a %s)\n", emiReal->nombre, objReal->nombre, danof, objReal->nombre);
-    }
-}
-
-
 //funciones de ximena
 
 // MAGIA
@@ -453,12 +441,12 @@ void add_revezazo(void *self, void * enemigo){ // igual aca, necesito que las 5 
     personaje *usuario= (personaje*)self;
     usuario->jerez ++;
     if(usuario->tipo==0){
-        printf("");
+        printf("\n`lograste poner a la poblacion en contra del gobierno\n");
         printf("conseguiste +1 reverzazo\n"); 
     }
     else{
-        printf("");
-        printf("consiguio +1 reverzazo");
+        printf("el gobierno a puesto a pelear al puueblo entre si\n");
+        printf("consiguio +1 reverzazo\n");
     }
 }
 
@@ -471,7 +459,7 @@ int botellita_de_jerez(personaje *defensor, personaje *atacante, int dano){
         int eleccion;
         
         printf("Tienes %d reverzazos, quieres usar uno?\n", defensor->jerez);
-        printf("1. si\n 2. no");
+        printf("1. si\n 2. no\n");
         scanf("%d", &eleccion);
 
         if(eleccion==1){
@@ -494,12 +482,44 @@ int botellita_de_jerez(personaje *defensor, personaje *atacante, int dano){
 }
 
 
+// void bolafuego(void ¨)   //movi esto para poder utilizar escudo y reverzazo aqui
+void bolafuego(void * emisor, void * objetivo) { // necesito atacante y atacado
+    int danof = 0;
+
+    personaje * objReal = (personaje *) objetivo; // es decir, quien recibirá el ataque
+    personaje * emiReal = (personaje *) emisor; // y quien tirará el ataque 
+    danof = emiReal->Attkmag - (objReal->Defmag); // el daño por fuego lo calculo a partir del ataque magico del emisor - la defensa magica de quien lo recibe 
+
+    // comprobacion para evadir/evasion
+    if (comprb_evadir(objReal) == true) { // utilizo de una vez el comprobar evadir con el objetivo, pues es quien recibira el quemazon en cuestion
+        printf("%s evadió exitosamente el ataque!\n", objReal->nombre);
+        return;
+    }
+
+    if (objReal->Defmag > emiReal->Attkmag) { // aqui como tal solo hago la comprobacion de daño porque si la defensa era mayor, no hace nada
+        objReal->dano = objReal->dano + 0;
+        printf("La magia falló\n");
+    } else {
+        objReal->dano = objReal->dano + danof;
+        printf("%s presenta una denuncia termonuclear y quema a %s por %d de daño (le prendió fuego a un expediente y se lo aventó a %s)\n", emiReal->nombre, objReal->nombre, danof, objReal->nombre);
+    }
+    if(usar_escudo(objetivo)){
+    return;
+    }
+    if(botellita_de_jerez(objetivo, emisor, danof)){
+    return;
+    }
+}
+    
+
+
+
 void ataque_fisico(personaje *atacante, personaje *defensor){
     int danyo_caus;
     danyo_caus= atacante->Attkfis - defensor->Deffis;
     if(danyo_caus <= 0){
         danyo_caus=0;
-        printf("no le atinan al golpe, les falta calle\n"); 
+        printf("\nno le atinan al golpe, les falta calle\n"); 
     } else {
     if (comprb_evadir(defensor)) {
     return;
@@ -719,7 +739,7 @@ void recompensa(personaje *usuario){
         }
 
         if(*(usados + eleccion - 1) == 1){
-            printf("ya rugiste\n");
+            printf("ya elejiste ese\n");
             continue;
         }
 
@@ -791,6 +811,144 @@ int magia_repetida(personaje *usuario, void (*magia)(void *, void *), int cantid
     return 0;
 }
 
+void (*obtener_magia(int numero))(void *, void *){
+
+    switch(numero){
+
+        case 1:
+            return magiaPerderTurno;
+
+        case 2:
+            return modifAtributos;
+
+        case 3:
+            return bolafuego;
+
+        case 4:
+            return add_escudo;
+
+        case 5:
+            return add_revezazo;
+
+        default:
+            return NULL;
+    }
+}
+
+
+void asignar_magias_cpu(personaje *enemigo){
+
+    for(int i = 0; i < 3; i++){
+
+        int numero = rand() % 5 + 1;
+
+        void (*nueva_magia)(void *, void *) = obtener_magia(numero);
+
+        if(magia_repetida(enemigo, nueva_magia, i)){
+            i--;
+            continue;
+        }
+
+        *(enemigo->magias + i) = nueva_magia;
+    }
+}
+
+
+void turno(personaje *usuario, personaje *enemigo){
+
+    int opcion;
+
+    printf("\nTURNO DE %s\n", usuario->nombre);
+
+    printf("1. ataque fisico\n");
+    printf("2. usar magia\n");
+    printf("3. evadir\n");
+    printf("elige una accion: ");
+    scanf("%d", &opcion);
+
+    switch(opcion){
+
+        case 1:
+            printf("\n elegiste ataque fisico\n");
+            ataque_fisico(usuario, enemigo);
+            break;
+
+        case 2: {
+        int magia_elegida;
+
+        void (*todas_magias[5])(void *, void *) = {
+            magiaPerderTurno, modifAtributos, bolafuego,
+            add_escudo, add_revezazo
+        };
+
+        char *nombres[5] = {
+            "perder turno", "modificar atributos", "bola de fuego",
+            "escudo", "reversazo"
+        };
+
+        printf("\nestas son tus magias:\n");
+
+        for(int i = 0; i < 3; i++){
+            for(int j = 0; j < 5; j++){
+
+                if(*(usuario->magias + i) == *(todas_magias + j)){
+                    printf("%d. %s\n", i + 1, *(nombres + j));
+                    break;
+                }
+            }
+        }
+
+        printf("elige una magia: ");
+        scanf("%d", &magia_elegida);
+
+        if(magia_elegida < 1 || magia_elegida > 3){
+            printf("Magia invalida\n");
+            break;
+        }
+
+        (*(usuario->magias + magia_elegida - 1))(usuario, enemigo);
+
+        break;
+        }
+
+        case 3:
+            evadir(usuario);
+            break;
+
+        default:
+            printf("opcion invalida\n");
+            break;
+    }
+}
+
+void turno_cpu(personaje *enemigo, personaje *jugador){
+
+    int accion = rand() % 3 + 1;
+
+    printf("\nTURNO DE %s\n", enemigo->nombre);
+
+    switch(accion){
+
+        case 1:
+            printf("%s eligio ataque fisico\n", enemigo->nombre);
+            ataque_fisico(enemigo, jugador);
+            break;
+
+        case 2: {
+            int magia = rand() % 3;
+
+            printf("%s eligio usar magia\n", enemigo->nombre);
+
+            (*(enemigo->magias + magia))(enemigo, jugador);
+            break;
+        }
+
+        case 3:
+            printf("%s eligio evadir\n", enemigo->nombre);
+            evadir(enemigo);
+            break;
+    }
+}
 
 /*
 [0] -> nuestro personaje
@@ -801,15 +959,23 @@ int magia_repetida(personaje *usuario, void (*magia)(void *, void *), int cantid
 */
 
 // orden de datos para personajes : nombre -> hp -> dano -> juega -> attkfis -> attkmag -> deffis -> defmag -> tipo -> escudo -> duracef -> atribmod -> buff 
-int main( ) {
+int main(void) {
     
-    personaje personajess[5] = {
-        {"Richy Anaya", 100, 0, true, 15, 14, 5, 4, 0, 0, 0, 0, false}, // jugador
-        {"Lemus", 75, 0, true, 12, 10, 3, 3, 1, 0, 0, 0, false}, // easy
-        {"AMLO(cabecita de algodon)", 90, 0, true, 16, 14, 5, 4, 1, 0, 0, 0, false}, // medium
-        {"ShameBee", 110, 0, true, 19, 18, 7, 6, 1, 0, 0, 0, false}, // hard 
-        {"Trump", 140, 0, true, 23, 21, 9, 8, 1, 0, 0, 0, false} // final boss 
-    };
+personaje personajess[5] = {
+    {"Richy Anaya", 20, 0, true, 5, 5, 5, 5, 0, 0, 0, 0, false, 0, false, {0}, {0}},
+    {"Lemus", 20, 0, true, 5, 5, 5, 5, 1, 0, 0, 0, false, 0, false, {0}, {0}},
+    {"AMLO(cabecita de algodon)", 20, 0, true, 7, 7, 6, 6, 1, 0, 0, 0, false, 0, false, {0}, {0}},
+    {"ShameBee", 20, 0, true, 9, 9, 8, 8, 1, 0, 0, 0, false, 0, false, {0}, {0}},
+    {"Trump", 20, 0, true, 12, 12, 10, 10, 1, 0, 0, 0, false, 0, false, {0}, {0}}
+};
+
+   for(int i = 1; i < 5; i++){
+    asignar_magias_cpu(personajess + i);
+    }
+    //para darle objetos a los ultimos villanos
+    dar_objetos(personajess + 2, 2);
+    dar_objetos(personajess + 3, 3);
+    dar_objetos(personajess + 4, 5);
 
     printf("|=========================================|\n");
     printf("|                                         |\n");
@@ -837,7 +1003,7 @@ int main( ) {
         printf("Tu personaje necesitará más que solo sus manos para ganar estas elecciones, elige 3 de las siguientes 5 magias\n");
         printf("Ingresa el número y luego enter, uno por uno*\n");
         printf("\n");
-        int magiaselegidas [3];
+
         for (int i = 0; i < 3; i++) { // ciclo para ir integrando las magias al arreglo de punteros a funcion de magias en vez de imprimir 3 veces o montones de veces todo el menu
             int pickmagia; // mejor que por iteracion esta variable se vaya reiniciando, creo que funciona 
             printf("1. Perder turno -> Hacer que tu oponente pierda su turno siguiente\n");
@@ -847,7 +1013,6 @@ int main( ) {
             printf("5. Reversazo -> podras generarlo en un turno\n y usarlo en el siguiente para usar la mitad del ataque de tu enemigo en su contra\n");
             scanf("%d", &pickmagia); // tomo cual fue la eleccion del jugador y justo con un switch ire metiendo la eleccion a cada una de las 3 posiciones
             
-            bool rep = false; // esta me sera una variable bandera para determinar si se repitio una magia o no 
             void (*nueva_magia)(void *, void *) = NULL;
 
             switch (pickmagia) // el switch para ir asignando 
@@ -869,12 +1034,15 @@ int main( ) {
                 break;
             default:
                 printf("opción inválida, utiliza un número dentro de las opciones disponibles\n");
-                i--;
                 break;
             } // llaves -> FIN SWITCH
+            if(nueva_magia==NULL){
+                i--;
+                continue;
+            }
             
-        if(magia_repetida(jugador, nueva_magia, i)){
-        printf("Ya elegiste esa magia, selecciona otra.\n");
+        if(magia_repetida(jugador, nueva_magia, i)){ //use esta linea en lugar de tu variable booleana
+        printf("ya elegiste esa magia, selecciona otra\n");
         i--;
         continue;
         }
@@ -882,12 +1050,45 @@ int main( ) {
         *(jugador->magias + i) = nueva_magia;
         } // llaves -> FIN FOR 
 
-        
-    } /* llaves fin del if START */ else if (start == 2) {
-        return 0;
+    for(int i = 1; i < 5; i++){
+
+    personaje *enemigo = personajess + i;
+
+    jugador->dano = 0;
+    enemigo->dano = 0;
+
+    jugador->juega = true;
+    enemigo->juega = true;
+
+    printf("\n================================\n");
+    printf("BATALLA %d\n", i);
+    printf("%s VS %s\n", jugador->nombre, enemigo->nombre);
+    printf("================================\n");
+
+    motordeTurnos(jugador, enemigo);
+
+    if(jugador->dano >= jugador->HP){
+        printf("\nPERDISTE, %s es un loser\n", jugador->nombre);
+        break;
     }
 
-    return 0;
+    printf("\nLE PARTISTE SU MANDARINA EN GAJOS A %s!\n", enemigo->nombre);
+    printf("GANASTE!!\n");
+
+    if(i < 4){
+        recompensa(jugador);
+    }
+}
+    } /* llaves fin del if START */  else if (start == 2) {
+    printf("Termino el juego, chao popo\n");
+}
+
+for(int i = 0; i < 5; i++){ // recorri tu return 0 para poder liberar 
+                            //la memoria de los objetos antes de q termine el programa amigo
+    free_inventario(personajess + i);
+}
+
+return 0;
 }
 
 
