@@ -565,8 +565,10 @@ int main( ) {
             printf("4. Escudo -> \n"); 
             printf("5. Reversazo -> \n");
             scanf("%d", &pickmagia); // tomo cual fue la eleccion del jugador y justo con un switch ire metiendo la eleccion a cada una de las 3 posiciones
+            
+            bool rep = false; // esta me sera una variable bandera para determinar si se repitio una magia o no 
 
-            switch (pickmagia) // el switch
+            switch (pickmagia) // el switch para ir asignando 
             {
             case 1:
                 *(jugador->magias + i) = magiaPerderTurno; // asignación a partir de desreferenciar el apuntador jugador, que manda llamar las magias y la aritmetica de posiciones usando i 
@@ -606,7 +608,7 @@ int main( ) {
 |   - %s como tal lee solo una palabra                                                                                                          |
 |   - %[^\n] -> lee hasta que haya un ENTER, acepta espacios -> para que funcione con el scanf del nombre, le necesito agregar el espacio al    |
 |     inicio
-|
+|   
 |
 |
 |*/
