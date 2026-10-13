@@ -1,6 +1,7 @@
 #include <stdbool.h>
 #include <stdio.h>
 #include <stdlib.h>
+#include <string.h>
 
 /*
 Ximena Sanchez Lomeli
@@ -32,6 +33,13 @@ typedef struct {
     objeto *inventario[5];
     void (*magias [3])(void *, void *); // aqui como tal uso lo que puso el profe, que sea un arreglo a punteros a funcion las magias y que solo se pueden 3 
 } personaje;
+
+void inicializar_inventario(personaje *jugador){//inicializar en NULL para evitar q lea basura
+
+    for(int i = 0; i < 5; i++){
+        *(jugador->inventario + i) = NULL;
+    }
+}
 
 /*           Motor de turnos                
     ya lo necesitaba para lo de la reduccion de atributos y asi, si no estaba medio matado solo hacerlo al aire     */
@@ -139,14 +147,33 @@ void motordeTurnos (personaje * jugador, personaje * enemigo) { // aqui necesito
         }
     }
 }
-
+//funcion de evadir como en la presentacion
+// tmb subi estas aca arriba porque como tal con ataque fisico debes checar si evadio o no, asi que ocupaba tener esto arriba para que ataquefisico que esta abajo lo agarrara
+void evadir(personaje *usuario) {
+    usuario->evacion = true;
+    printf("%s intento evadir el proximo ataque\n", usuario->nombre);
+}
+int comprb_evadir(personaje *usuario){ // ximena, cambie la funcion a int porque al ser void y regresar numero me marcaba error por todas partes y me andaba haciendo bolas JAJAJAJJA
+    if(usuario->evacion == false){
+        return 0;
+    }
+    usuario->evacion = false;
+    if(rand()%2 == 0){
+        printf("esquivaste la bala\n");
+        return 1;
+    }
+    else{
+        printf("igual te dio, pelaste\n");
+        return 0;
+    }
+}
 
 
 
 /*           Mis 3 funciones de magia         */
 
 // Perder turno 
-void magiaPerderTurno(void * enemigo, void * emisor) { // con el void * enemigo, apunto al enemigo que quiero afectar 
+void magiaPerderTurno(void * emisor, void * enemigo) { // con el void * enemigo, apunto al enemigo que quiero afectar 
     personaje * enemigoReal = (personaje *) enemigo; // como enemigo es void, uso otro de personaje para poder acceder al "menu" de datos y casteo a enemigo a personaje
     personaje * emisorReal = (personaje *) emisor;
     if (comprb_evadir(enemigoReal) == true) { // aqui pues como evadir funciona para todo, de una vez lo agregué a mi magia
@@ -342,7 +369,7 @@ void modifAtributos(void * self, void * enemigo) { // como quiero poder usar la 
 
 
 // void bolafuego(void ¨)
-void bolafuego(void * objetivo, void * emisor) { // necesito atacante y atacado
+void bolafuego(void * emisor, void * objetivo) { // necesito atacante y atacado
     int danof = 0;
 
     personaje * objReal = (personaje *) objetivo; // es decir, quien recibirá el ataque
@@ -466,26 +493,6 @@ int botellita_de_jerez(personaje *defensor, personaje *atacante, int dano){
     return 0;
 }
 
-//funcion de evadir como en la presentacion dice la presentacion
-// tmb subi estas aca arriba porque como tal con ataque fisico debes checar si evadio o no, asi que ocupaba tener esto arriba para que ataquefisico que esta abajo lo agarrara
-void evadir(personaje *usuario) {
-    usuario->evacion = true;
-    printf("%s intento evadir el proximo ataque\n", usuario->nombre);
-}
-int comprb_evadir(personaje *usuario){ // ximena, cambie la funcion a int porque al ser void y regresar numero me marcaba error por todas partes y me andaba haciendo bolas JAJAJAJJA
-    if(usuario->evacion == false){
-        return 0;
-    }
-    usuario->evacion = false;
-    if(rand()%2 == 0){
-        printf("esquivaste la bala\n");
-        return 1;
-    }
-    else{
-        printf("igual te dio, pelaste\n");
-        return 0;
-    }
-}
 
 void ataque_fisico(personaje *atacante, personaje *defensor){
     int danyo_caus;
@@ -512,6 +519,278 @@ void ataque_fisico(personaje *atacante, personaje *defensor){
 }
 
 
+//funcion para los objetos
+objeto *crear_obj(void){
+    objeto *nuevo = malloc(sizeof(objeto));
+
+    if(nuevo == NULL){
+        printf("no jalo el objeto\n");
+        return NULL;
+    }
+
+    nuevo->atributo = rand() % 5 + 1;
+    nuevo->poder = rand() % 5 + 1;
+    
+ switch(nuevo->atributo){
+// aqui solo puse 5 opciones de nombres, pero igual tendras distintos valores cada q los inicialices
+    case 1:
+        strcpy(nuevo->nombre, "botiquin presidencial");
+        break;
+
+    case 2:
+        strcpy(nuevo->nombre, "mega chancla");
+        break;
+
+    case 3:
+        strcpy(nuevo->nombre, "chaleco antibalas");
+        break;
+
+    case 4:
+        strcpy(nuevo->nombre, "microfono");
+        break;
+
+    case 5:
+        strcpy(nuevo->nombre, "amparo supremo");
+        break;
+}
+return nuevo;
+}
+
+void print_obj(objeto *obj){
+
+    if(obj == NULL){
+        return;
+    }
+
+    printf("nombre: %s\n", obj->nombre);
+    printf("atributo: %d\n", obj->atributo);
+    printf("poder: +%d\n", obj->poder);
+}
+
+//para modificar al personaje segun lo que gane
+void usar_obj(personaje *usuario, objeto *obj){
+    if(obj==NULL){
+        return;
+    }
+    switch(obj->atributo){
+        case 1:
+            usuario->HP += obj->poder;
+            break;
+
+        case 2:
+            usuario->Attkfis += obj->poder;
+            break;
+
+        case 3:
+            usuario->Deffis += obj->poder;
+            break;
+
+        case 4:
+            usuario->Attkmag += obj->poder;
+            break;
+
+        case 5:
+            usuario->Defmag += obj->poder;
+            break;
+    }
+}
+
+//lo guarda en el inventario del struct de personaje
+int guardar_obj(personaje *usuario, objeto *nuevo){
+    if(nuevo == NULL){
+        return 0;
+    }
+
+    for(int i=0; i < 5; i++){
+        if(*(usuario->inventario + i)==NULL){
+            *(usuario->inventario + i) = nuevo;
+            usar_obj(usuario, nuevo);
+            return 1;
+        }
+    }
+return 0;
+}
+
+//funciones para reemplazar un objeto del inventario por uno nuevo
+void quitar_obj(personaje *usuario, objeto *obj){
+
+    if(obj == NULL){
+        return;
+    }
+
+    switch(obj->atributo){
+
+        case 1:
+            usuario->HP -= obj->poder;
+            break;
+
+        case 2:
+            usuario->Attkfis -= obj->poder;
+            break;
+
+        case 3:
+            usuario->Deffis -= obj->poder;
+            break;
+
+        case 4:
+            usuario->Attkmag -= obj->poder;
+            break;
+
+        case 5:
+            usuario->Defmag -= obj->poder;
+            break;
+    }
+}
+
+
+int reemplazar_obj(personaje *usuario, objeto *nuevo){
+
+    int opcion;
+
+    if(nuevo == NULL){
+        return 0;
+    }
+
+    if(usuario->tipo == 0){
+
+        printf("\nINVENTARIO LLENO\n");
+        printf("Selecciona el objeto que quieres reemplazar:\n");
+
+        for(int i = 0; i < 5; i++){ 
+
+            objeto *actual = *(usuario->inventario + i);
+
+            printf("%d. %s (+%d)\n", i + 1, actual->nombre, actual->poder);
+        }
+
+        printf("0. no reemplazar\n");
+        printf("opcion: ");
+        scanf("%d", &opcion);
+
+        if(opcion < 1 || opcion > 5){
+            return 0;
+        }
+    }
+    else{
+
+        opcion = rand() % 5 + 1;
+
+    }
+
+    objeto *viejo = *(usuario->inventario + opcion - 1);
+
+    quitar_obj(usuario, viejo);
+
+    free(viejo);
+
+    *(usuario->inventario + opcion - 1) = nuevo;
+
+    usar_obj(usuario, nuevo);
+
+    return 1;
+}
+
+void recompensa(personaje *usuario){
+
+    objeto *opciones[4];
+    int eleccion;
+    int elegidos = 0;
+    int usados[4] = {0, 0, 0, 0};
+
+    for(int i = 0; i < 4; i++){
+        *(opciones + i) = crear_obj();
+    }
+
+    printf("\nFELICIDADES! GANASTE LA BATALLA!\n");
+    printf("puedes elegir 2 de los siguientes objetos:\n");
+
+    for(int i = 0; i < 4; i++){
+        printf("\nopcion %d:\n", i + 1);
+        print_obj(*(opciones + i));
+    }
+
+    while(elegidos < 2){
+
+        printf("\nelige uno de los 4 objetos: ");
+        scanf("%d", &eleccion);
+        if(eleccion < 1 || eleccion > 4){
+            printf("opcion invalida\n");
+            continue;
+        }
+
+        if(*(usados + eleccion - 1) == 1){
+            printf("ya rugiste\n");
+            continue;
+        }
+
+        objeto *nuevo = *(opciones + eleccion - 1);
+
+        if(guardar_obj(usuario, nuevo) || reemplazar_obj(usuario, nuevo)){
+
+            *(usados + eleccion - 1) = 1;
+            elegidos++;
+
+            printf("objeto agregado\n");
+        }
+        else{
+            printf("no se guardo el objeto, intenta de nuevo.\n");
+        }
+    }
+
+    for(int i = 0; i < 4; i++){
+
+        if(*(usados + i) == 0){
+            free(*(opciones + i));
+        }
+    }
+}
+
+
+void free_inventario(personaje *usuario){
+
+    for(int i = 0; i < 5; i++){
+
+        objeto *actual = *(usuario->inventario + i);
+
+        if(actual != NULL){
+
+            free(actual);
+
+            *(usuario->inventario + i) = NULL;
+        }
+    }
+}
+//para los objetos de CPU
+void dar_objetos(personaje *enemigo, int cantidad){
+
+    for(int i = 0; i < cantidad && i < 5; i++){
+
+        objeto *nuevo = crear_obj();
+
+        if(nuevo == NULL){
+            return;
+        }
+
+        if(!guardar_obj(enemigo, nuevo)){
+            free(nuevo);
+            return;
+        }
+    }
+}
+
+
+int magia_repetida(personaje *usuario, void (*magia)(void *, void *), int cantidad){
+
+    for(int i = 0; i < cantidad; i++){
+
+        if(*(usuario->magias + i) == magia){
+            return 1;
+        }
+    }
+
+    return 0;
+}
+
 
 /*
 [0] -> nuestro personaje
@@ -523,10 +802,11 @@ void ataque_fisico(personaje *atacante, personaje *defensor){
 
 // orden de datos para personajes : nombre -> hp -> dano -> juega -> attkfis -> attkmag -> deffis -> defmag -> tipo -> escudo -> duracef -> atribmod -> buff 
 int main( ) {
+    
     personaje personajess[5] = {
         {"Richy Anaya", 100, 0, true, 15, 14, 5, 4, 0, 0, 0, 0, false}, // jugador
         {"Lemus", 75, 0, true, 12, 10, 3, 3, 1, 0, 0, 0, false}, // easy
-        {"AMLOVE", 90, 0, true, 16, 14, 5, 4, 1, 0, 0, 0, false}, // medium
+        {"AMLO(cabecita de algodon)", 90, 0, true, 16, 14, 5, 4, 1, 0, 0, 0, false}, // medium
         {"ShameBee", 110, 0, true, 19, 18, 7, 6, 1, 0, 0, 0, false}, // hard 
         {"Trump", 140, 0, true, 23, 21, 9, 8, 1, 0, 0, 0, false} // final boss 
     };
@@ -563,34 +843,43 @@ int main( ) {
             printf("1. Perder turno -> Hacer que tu oponente pierda su turno siguiente\n");
             printf("2. Modificación de atributos -> Generar un buff a ti o un debuff a la oposición\n");
             printf("3. Bola de fuego -> Bola de fuego que dará quemazón a tu rival \n");
-            printf("4. Escudo -> \n"); 
-            printf("5. Reversazo -> \n");
+            printf("4. Escudo -> podras generarlo en un turno y usarlo en el siguienre para evitar un ataque\n"); 
+            printf("5. Reversazo -> podras generarlo en un turno\n y usarlo en el siguiente para usar la mitad del ataque de tu enemigo en su contra\n");
             scanf("%d", &pickmagia); // tomo cual fue la eleccion del jugador y justo con un switch ire metiendo la eleccion a cada una de las 3 posiciones
             
             bool rep = false; // esta me sera una variable bandera para determinar si se repitio una magia o no 
+            void (*nueva_magia)(void *, void *) = NULL;
 
             switch (pickmagia) // el switch para ir asignando 
             {
             case 1:
-                *(jugador->magias + i) = magiaPerderTurno; // asignación a partir de desreferenciar el apuntador jugador, que manda llamar las magias y la aritmetica de posiciones usando i 
+                nueva_magia = magiaPerderTurno; // asignación a partir de desreferenciar el apuntador jugador, que manda llamar las magias y la aritmetica de posiciones usando i 
                 break;
             case 2:
-                *(jugador->magias + i) = modifAtributos;
+                nueva_magia = modifAtributos;
                 break;
             case 3:
-                *(jugador->magias + i) = bolafuego;
+                nueva_magia = bolafuego;
                 break;
             case 4:
-                *(jugador->magias + i) = add_escudo;
+                nueva_magia = add_escudo;
                 break;
             case 5:
-                *(jugador->magias + i) = add_revezazo;
+                nueva_magia = add_revezazo;
                 break;
             default:
-                printf("Opción inválida, utiliza un número dentro de las opciones disponibles\n");
+                printf("opción inválida, utiliza un número dentro de las opciones disponibles\n");
                 i--;
                 break;
             } // llaves -> FIN SWITCH
+            
+        if(magia_repetida(jugador, nueva_magia, i)){
+        printf("Ya elegiste esa magia, selecciona otra.\n");
+        i--;
+        continue;
+        }
+
+        *(jugador->magias + i) = nueva_magia;
         } // llaves -> FIN FOR 
 
         
