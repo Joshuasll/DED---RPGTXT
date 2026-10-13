@@ -557,6 +557,7 @@ int main( ) {
         printf("Tu personaje necesitará más que solo sus manos para ganar estas elecciones, elige 3 de las siguientes 5 magias\n");
         printf("Ingresa el número y luego enter, uno por uno*\n");
         printf("\n");
+        int magiaselegidas [3];
         for (int i = 0; i < 3; i++) { // ciclo para ir integrando las magias al arreglo de punteros a funcion de magias en vez de imprimir 3 veces o montones de veces todo el menu
             int pickmagia; // mejor que por iteracion esta variable se vaya reiniciando, creo que funciona 
             printf("1. Perder turno -> Hacer que tu oponente pierda su turno siguiente\n");
