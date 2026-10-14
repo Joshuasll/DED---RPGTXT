@@ -23,15 +23,15 @@ typedef struct {
     int Attkmag;
     int Deffis;
     int Defmag;
-    int tipo; //para saber si es humano o villano       
+    int tipo; // humano o villano (0-1)
     int escudo; //para mi funcion
-    int duracef; // duracef -> duracion de efecto(s)
+    int duracef; // duracion buff o debuff
     int atribmod; // para guardar el atributo modificado y reconocer cual es
     bool buff; // fue mejora o disminucion? es decir true -> +2 o false -> -2 para el aumento o disminucion de atributos aka para poder recordar que hacerle tras los 3 turnos 
     int jerez;
     bool evacion;
     objeto *inventario[5];
-    void (*magias [3])(void *, void *); // aqui como tal uso lo que puso el profe, que sea un arreglo a punteros a funcion las magias y que solo se pueden 3 
+    void (*magias [3])(void *, void *); // arreglo de punteros a funcion para magias 
 } personaje;
 
 void inicializar_inventario(personaje *jugador){//inicializar en NULL para evitar q lea basura
@@ -107,7 +107,7 @@ void motordeTurnos (personaje * jugador, personaje * enemigo) { // turnos contro
                 if (enemigo->duracef == 0) { // una vez que da las vueltas y va restando, ya cuando da 0, pasa a esto
                     if (enemigo->buff == true) { // aqui determino si toca restar o sumar
                         switch (enemigo->atribmod) // recibo el atributo modificado, donde guarde cual cambió
-                        { // AQUI reciclé un poco del codigo anterior 
+                        { // reciclé codigo anterior
                             case 1: // ya con los cases, restauro las stats a su punto anterior 
                                 enemigo->Attkfis = enemigo->Attkfis - 2;
                                 break;
@@ -192,21 +192,14 @@ void magiaPerderTurno(void * emisor, void * enemigo) { // con el void * enemigo,
         printf("Richy little levanta un amparo y hace que el enemigo pierda turno\n");
     }
 }
-/*
-En esa de perder turno, la deje asi de momento, porque como tal, creo que tendriamos que poner tmb algo como que 
-administre los turnos por fuera, incluirlo dentro haria que el false de que juegue el personaje en cuestion dure una
-nadotaaaaaa - UPDATE -> ya quedó
-*/
 
 // Mejora o reduccion de atributos 
 void modifAtributos(void * self, void * enemigo) { // como quiero poder usar la magia sobre mi mismo o el enemigo, mejor aclarar bien a quien le dare 
     personaje * selfReal = (personaje *) self; // igualito que arriba, tengo que hacer que sea personaje 
     personaje * enemigoReal = (personaje *) enemigo;
     
-    int elaf; // elaf por eleccion afectado jajajajj
-    int elmg; // elmg por eleccion de magia 
-    
-    // seleccion de a quien afectar -> peero esto solo funciona para el humano, para nosotros
+    int elaf; // elaf  = eleccion afectado 
+    int elmg; // elmg = eleccion de magia 
     
     // adición para la cpu
     /* rand() genera un numero aleatorio, normalmente sale uno grande 
@@ -215,6 +208,7 @@ void modifAtributos(void * self, void * enemigo) { // como quiero poder usar la 
        si quiero que o¿por ejemplo se pueda solo 1 y 2 como abajo
        rand() % 2+1 <- es lo ideal 
     */
+
     // control si es humano o cpu 
     if (selfReal->tipo == 0) {
         printf("A quien quieres afectar?\n");
@@ -307,9 +301,9 @@ void modifAtributos(void * self, void * enemigo) { // como quiero poder usar la 
             */
         }
 
-         if (enemigoReal->Defmag > selfReal->Attkmag){ // como en el documento dice que si la defensa magica es mayor no surte efecto, ues toca comparar primero
+         if (enemigoReal->Defmag > selfReal->Attkmag){ // como en el documento dice que si la defensa magica es mayor no surte efecto, comparacion
             printf("La magia no surtió efecto! \n"); // simplemente inform
-            return; // cortan,
+            return; // corte
         }
 
         // control si es humano o cpu
@@ -323,7 +317,7 @@ void modifAtributos(void * self, void * enemigo) { // como quiero poder usar la 
         } else {
             elmg = rand() %4+1;
         }
-        // SWITCH para cuando es al ENEMIGO, al que LE RESTARÉ, el DEBUFF
+        // SWITCH para cuando es al ENEMIGO, LE RESTARÉ, DEBUFF
         switch (elmg)
         {
             case 1:
@@ -339,7 +333,7 @@ void modifAtributos(void * self, void * enemigo) { // como quiero poder usar la 
             break;
             case 2:
             enemigoReal->Attkmag = enemigoReal->Attkmag - 2;
-            enemigoReal->duracef = 3; // same here
+            enemigoReal->duracef = 3; 
             enemigoReal->atribmod = elmg;
             enemigoReal->buff = false;
             if (selfReal->tipo == 0) {
@@ -350,7 +344,7 @@ void modifAtributos(void * self, void * enemigo) { // como quiero poder usar la 
             break;
             case 3:
             enemigoReal->Deffis = enemigoReal->Deffis - 2;
-            enemigoReal->duracef = 3; // same here
+            enemigoReal->duracef = 3; 
             enemigoReal->atribmod = elmg;
             enemigoReal->buff = false;
             if (selfReal->tipo == 0) {
@@ -361,7 +355,7 @@ void modifAtributos(void * self, void * enemigo) { // como quiero poder usar la 
             break;
             case 4:
             enemigoReal->Defmag = enemigoReal->Defmag - 2;
-            enemigoReal->duracef = 3; // same same same 
+            enemigoReal->duracef = 3; 
             enemigoReal->atribmod = elmg;
             enemigoReal->buff = false;
             if (selfReal->tipo == 0) {
@@ -526,7 +520,6 @@ void ataque_fisico(personaje *atacante, personaje *defensor){
     printf("ahora %s tiene %d de daño, ¡aguas!\n", defensor->nombre, defensor->dano);
 }
 
-
 //funcion para los objetos
 objeto *crear_obj(void){
     objeto *nuevo = malloc(sizeof(objeto));
@@ -608,7 +601,6 @@ int guardar_obj(personaje *usuario, objeto *nuevo){
     if(nuevo == NULL){
         return 0;
     }
-
     for(int i=0; i < 5; i++){
         if(*(usuario->inventario + i)==NULL){
             *(usuario->inventario + i) = nuevo;
