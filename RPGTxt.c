@@ -45,13 +45,12 @@ void inicializar_inventario(personaje *jugador){//inicializar en NULL para evita
     void turno(personaje *usuario, personaje *enemigo); //para q motor de turnos sepa q usara esas funciones
 
 void motordeTurnos (personaje * jugador, personaje * enemigo) { // turnos controlan a los 2 
-
     while ((jugador->dano < jugador->HP) && (enemigo->dano < enemigo->HP)) { 
         // Humano
         if (jugador->juega == false ) { // pierde turno?
             jugador->juega = true; // corrijo y dejo listo para la siguiente tirada 
         } else {
-        turno(jugador, enemigo); 
+            turno(jugador, enemigo); 
         }
         // buff o debuff - humano
         if (jugador->duracef > 0) {
@@ -59,89 +58,88 @@ void motordeTurnos (personaje * jugador, personaje * enemigo) { // turnos contro
             if (jugador->duracef == 0) { // una vez que da las vueltas y va restando
                 if (jugador->buff == true) { // aqui determino si toca restar o sumar
                     switch (jugador->atribmod) // recibo el atributo modificado, donde guarde cual cambió
-                {
-                case 1: // restauro con cases
-                    jugador->Attkfis = jugador->Attkfis - 2;
-                    break;
-                case 2:
-                    jugador->Attkmag = jugador->Attkmag - 2;
-                    break;
-                case 3:
-                    jugador->Deffis = jugador->Deffis - 2;
-                    break;
-                case 4:
-                    jugador->Defmag = jugador->Defmag - 2; 
-                    break;
-                default:
-                    break;
-                } // llave switch si fue buff
-            } else {
+                    {
+                        case 1: // restauro con cases
+                            jugador->Attkfis = jugador->Attkfis - 2;
+                            break;
+                        case 2:
+                            jugador->Attkmag = jugador->Attkmag - 2;
+                            break;
+                        case 3:
+                            jugador->Deffis = jugador->Deffis - 2;
+                            break;
+                        case 4:
+                            jugador->Defmag = jugador->Defmag - 2; 
+                            break;
+                        default:
+                            break;
+                    } // llave switch si fue buff
+                } else {
                     switch (jugador->atribmod) // recibo el atributo modificado, donde guarde cual cambió
-                {
-                case 1: // ya con los cases, restauro las stats a su punto anterior 
-                    jugador->Attkfis = jugador->Attkfis + 2;
-                    break;
-                case 2:
-                    jugador->Attkmag = jugador->Attkmag + 2;
-                    break;
-                case 3:
-                    jugador->Deffis = jugador->Deffis + 2;
-                    break;
-                case 4:
-                    jugador->Defmag = jugador->Defmag + 2; 
-                    break;
-                default:
-                    break;
-                } // cierre switch debuff
+                    {
+                        case 1: // ya con los cases, restauro las stats a su punto anterior 
+                            jugador->Attkfis = jugador->Attkfis + 2;
+                            break;
+                        case 2:
+                            jugador->Attkmag = jugador->Attkmag + 2;
+                            break;
+                        case 3:
+                            jugador->Deffis = jugador->Deffis + 2;
+                            break;
+                        case 4:
+                            jugador->Defmag = jugador->Defmag + 2; 
+                            break;
+                        default:
+                            break;
+                    } // cierre switch debuff
+                }
             }
         }
-    
-
         // Enemigo
         if ((enemigo->dano < enemigo->HP) && (jugador->dano < jugador->HP)) {
             if (enemigo->juega == false ) {
                 enemigo->juega = true; // de nuevo corrijo pero para enemigo 
-                } else {
-                turno_cpu(enemigo, jugador);
-                }
-                if (enemigo->duracef > 0) {
-            enemigo->duracef --; // voy restando al contador de turnos que da duracion del buff o debuff 
-            if (enemigo->duracef == 0) { // una vez que da las vueltas y va restando, ya cuando da 0, pasa a esto
-                if (enemigo->buff == true) { // aqui determino si toca restar o sumar
-                    switch (enemigo->atribmod) // recibo el atributo modificado, donde guarde cual cambió
-                { // AQUI reciclé un poco del codigo anterior 
-                case 1: // ya con los cases, restauro las stats a su punto anterior 
-                    enemigo->Attkfis = enemigo->Attkfis - 2;
-                    break;
-                case 2:
-                    enemigo->Attkmag = enemigo->Attkmag - 2;
-                    break;
-                case 3:
-                    enemigo->Deffis = enemigo->Deffis - 2;
-                    break;
-                case 4:
-                    enemigo->Defmag = enemigo->Defmag - 2; 
-                    break;
-                default:
-                    break;
-                } // llave switch si fue buff
             } else {
-                    switch (enemigo->atribmod) // recibo el atributo modificado, donde guarde cual cambió
-                {
-                case 1: // ya con los cases, restauro las stats a su punto anterior 
-                    enemigo->Attkfis = enemigo->Attkfis + 2;
-                    break;
-                case 2:
-                    enemigo->Attkmag = enemigo->Attkmag + 2;
-                    break;
-                case 3:
-                    enemigo->Deffis = enemigo->Deffis + 2;
-                    break;
-                case 4:
-                    enemigo->Defmag = enemigo->Defmag + 2; 
-                    break;
-                default:
-                    break;
+                turno_cpu(enemigo, jugador);
+            }
+            if (enemigo->duracef > 0) {
+                enemigo->duracef --; // voy restando al contador de turnos que da duracion del buff o debuff 
+                if (enemigo->duracef == 0) { // una vez que da las vueltas y va restando, ya cuando da 0, pasa a esto
+                    if (enemigo->buff == true) { // aqui determino si toca restar o sumar
+                        switch (enemigo->atribmod) // recibo el atributo modificado, donde guarde cual cambió
+                        { // AQUI reciclé un poco del codigo anterior 
+                            case 1: // ya con los cases, restauro las stats a su punto anterior 
+                                enemigo->Attkfis = enemigo->Attkfis - 2;
+                                break;
+                            case 2:
+                                enemigo->Attkmag = enemigo->Attkmag - 2;
+                                break;
+                            case 3:
+                                enemigo->Deffis = enemigo->Deffis - 2;
+                                break;
+                            case 4:
+                                enemigo->Defmag = enemigo->Defmag - 2; 
+                                break;
+                            default:
+                                break;
+                        } // llave switch si fue buff
+                    } else {
+                        switch (enemigo->atribmod) // recibo el atributo modificado, donde guarde cual cambió
+                        {
+                            case 1: // ya con los cases, restauro las stats a su punto anterior 
+                                enemigo->Attkfis = enemigo->Attkfis + 2;
+                                break;
+                            case 2:
+                                enemigo->Attkmag = enemigo->Attkmag + 2;
+                                break;
+                            case 3:
+                                enemigo->Deffis = enemigo->Deffis + 2;
+                                break;
+                            case 4:
+                                enemigo->Defmag = enemigo->Defmag + 2; 
+                                break;
+                            default:
+                                break;
                         } // llave switch si fue debuff
                     }
                 } 
@@ -149,7 +147,7 @@ void motordeTurnos (personaje * jugador, personaje * enemigo) { // turnos contro
         }
     }
 }
-}
+
 //funcion de evadir como en la presentacion
 // tmb subi estas aca arriba porque como tal con ataque fisico debes checar si evadio o no, asi que ocupaba tener esto arriba para que ataquefisico que esta abajo lo agarrara
 void evadir(personaje *usuario) {
@@ -512,24 +510,20 @@ void ataque_fisico(personaje *atacante, personaje *defensor){
     int danyo_caus;
     danyo_caus= atacante->Attkfis - defensor->Deffis;
     if(danyo_caus <= 0){
-        danyo_caus=0;
-        printf("\nno le atinan al golpe, les falta calle\n"); 
-    } else {
+        danyo_caus=1;
+    }
     if (comprb_evadir(defensor)) {
-    return;
-    } else {
+        return;
+    }
     if(usar_escudo(defensor)){
-    return;
+        return;
     }
     if(botellita_de_jerez(defensor, atacante, danyo_caus)){
-    return;
+        return;
     }
     defensor->dano += danyo_caus;
-
     printf("%s le metio un madrazo a %s\n", atacante->nombre, defensor->nombre);
     printf("ahora %s tiene %d de daño, ¡aguas!\n", defensor->nombre, defensor->dano);
-        }
-    }
 }
 
 
