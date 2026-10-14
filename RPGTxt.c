@@ -97,7 +97,7 @@ void motordeTurnos (personaje * jugador, personaje * enemigo) { // aqui necesito
                 } // cierre switch debuff
             }
         }
-    }
+    
 
         // Enemigo
         if (enemigo->dano < enemigo->HP) {
@@ -150,6 +150,7 @@ void motordeTurnos (personaje * jugador, personaje * enemigo) { // aqui necesito
             }
         }
     }
+}
 }
 //funcion de evadir como en la presentacion
 // tmb subi estas aca arriba porque como tal con ataque fisico debes checar si evadio o no, asi que ocupaba tener esto arriba para que ataquefisico que esta abajo lo agarrara
