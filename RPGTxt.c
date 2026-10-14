@@ -44,25 +44,23 @@ void inicializar_inventario(personaje *jugador){//inicializar en NULL para evita
     void turno_cpu(personaje *enemigo, personaje *jugador);
     void turno(personaje *usuario, personaje *enemigo); //para q motor de turnos sepa q usara esas funciones
 
-/*           Motor de turnos                
-    ya lo necesitaba para lo de la reduccion de atributos y asi, si no estaba medio matado solo hacerlo al aire     */
-void motordeTurnos (personaje * jugador, personaje * enemigo) { // aqui necesito que los turnos controlen a los 2 
+void motordeTurnos (personaje * jugador, personaje * enemigo) { // turnos controlan a los 2 
 
-    while ((jugador->dano < jugador->HP) && (enemigo->dano < enemigo->HP)) { // esta linea la pongo porque en realidad necesito que hayan turnos mientras la batalla siga aka que sigan vivos los dos 
+    while ((jugador->dano < jugador->HP) && (enemigo->dano < enemigo->HP)) { 
         // Humano
-        if (jugador->juega == false ) { // reviso si pierde turno o no
+        if (jugador->juega == false ) { // pierde turno?
             jugador->juega = true; // corrijo y dejo listo para la siguiente tirada 
         } else {
         turno(jugador, enemigo); 
         }
-        // por si hay buff o debuff - humano
+        // buff o debuff - humano
         if (jugador->duracef > 0) {
-            jugador->duracef --; // voy restando al contador de turnos que da duracion del buff o debuff 
-            if (jugador->duracef == 0) { // una vez que da las vueltas y va restando, ya cuando da 0, pasa a esto
+            jugador->duracef --; 
+            if (jugador->duracef == 0) { // una vez que da las vueltas y va restando
                 if (jugador->buff == true) { // aqui determino si toca restar o sumar
                     switch (jugador->atribmod) // recibo el atributo modificado, donde guarde cual cambió
                 {
-                case 1: // ya con los cases, restauro las stats a su punto anterior 
+                case 1: // restauro con cases
                     jugador->Attkfis = jugador->Attkfis - 2;
                     break;
                 case 2:
@@ -100,7 +98,7 @@ void motordeTurnos (personaje * jugador, personaje * enemigo) { // aqui necesito
     
 
         // Enemigo
-        if (enemigo->dano < enemigo->HP) {
+        if ((enemigo->dano < enemigo->HP) && (jugador->dano < jugador->HP)) {
             if (enemigo->juega == false ) {
                 enemigo->juega = true; // de nuevo corrijo pero para enemigo 
                 } else {
@@ -484,36 +482,31 @@ int botellita_de_jerez(personaje *defensor, personaje *atacante, int dano){
 
 
 // void bolafuego(void ¨)   //movi esto para poder utilizar escudo y reverzazo aqui
-void bolafuego(void * emisor, void * objetivo) { // necesito atacante y atacado
+void bolafuego(void * emisor, void * objetivo) { 
     int danof = 0;
 
-    personaje * objReal = (personaje *) objetivo; // es decir, quien recibirá el ataque
-    personaje * emiReal = (personaje *) emisor; // y quien tirará el ataque 
-    danof = emiReal->Attkmag - (objReal->Defmag); // el daño por fuego lo calculo a partir del ataque magico del emisor - la defensa magica de quien lo recibe 
+    personaje * objReal = (personaje *) objetivo; 
+    personaje * emiReal = (personaje *) emisor; 
+    danof = emiReal->Attkmag - (objReal->Defmag); // ataque magico del emisor - la defensa magica de quien lo recibe 
 
     // comprobacion para evadir/evasion
     if (comprb_evadir(objReal) == true) { // utilizo de una vez el comprobar evadir con el objetivo, pues es quien recibira el quemazon en cuestion
         printf("%s evadió exitosamente el ataque!\n", objReal->nombre);
         return;
     }
-
-    if (objReal->Defmag > emiReal->Attkmag) { // aqui como tal solo hago la comprobacion de daño porque si la defensa era mayor, no hace nada
-        objReal->dano = objReal->dano + 0;
+    if (objReal->Defmag > emiReal->Attkmag) { // comprobacion de daño porque si la defensa era mayor, no hace nada
         printf("La magia falló\n");
-    } else {
-        objReal->dano = objReal->dano + danof;
-        printf("%s presenta una denuncia termonuclear y quema a %s por %d de daño (le prendió fuego a un expediente y se lo aventó a %s)\n", emiReal->nombre, objReal->nombre, danof, objReal->nombre);
+        return;
     }
-    if(usar_escudo(objetivo)){
-    return;
+    if(usar_escudo(objReal)){
+        return;
     }
-    if(botellita_de_jerez(objetivo, emisor, danof)){
-    return;
+    if(botellita_de_jerez(objReal, emiReal, danof)){
+        return;
     }
+    objReal->dano = objReal->dano + danof;
+    printf("%s presenta una denuncia termonuclear y quema a %s por %d de daño (le prendió fuego a un expediente y se lo aventó a %s)\n", emiReal->nombre, objReal->nombre, danof, objReal->nombre);
 }
-    
-
-
 
 void ataque_fisico(personaje *atacante, personaje *defensor){
     int danyo_caus;
@@ -1076,6 +1069,13 @@ personaje personajess[5] = {
     printf("\nLE PARTISTE SU MANDARINA EN GAJOS A %s!\n", enemigo->nombre);
     printf("GANASTE!!\n");
 
+    if (i == 4) {
+        printf("\n================================\n");
+        printf("GANASTE OBRADOR SOULS\n");
+        printf("GANASTE LAS ELECCIONES\n");
+        printf("================================\n");
+    }
+
     if(i < 4){
         recompensa(jugador);
     }
@@ -1100,7 +1100,4 @@ return 0;
 |   - %s como tal lee solo una palabra                                                                                                          |
 |   - %[^\n] -> lee hasta que haya un ENTER, acepta espacios -> para que funcione con el scanf del nombre, le necesito agregar el espacio al    |
 |     inicio
-|   
-|
-|
-|*/
+*/
